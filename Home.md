@@ -1,3 +1,3 @@
 Welcome to the orchestrator wiki!
 
-* FAQ
+* [FAQ](FAQ)
