@@ -31,6 +31,7 @@ Setup a MySQL server for backend, and invoke the following:
 
 Orchestrator uses a configuration file, located in either `/etc/orchestrator.conf.json` or relative path to binary `conf/orchestrator.conf.json` or `orchestrator.conf.json`. Edit this file to match the above as follows:
 
+<code lang="json">
     ...
     "MySQLOrchestratorHost": "127.0.0.1",
     "MySQLOrchestratorPort": 3306,
@@ -38,3 +39,4 @@ Orchestrator uses a configuration file, located in either `/etc/orchestrator.con
     "MySQLOrchestratorUser": "orchestrator",
     "MySQLOrchestratorPassword": "orch_backend_password",
     ...
+</code>
