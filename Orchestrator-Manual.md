@@ -1,6 +1,6 @@
 _Orchestrator_ is a MySQL replication topology management and visualization tool, allowing for:
 
-    Detection and interrogation of replication clusters
+*     Detection and interrogation of replication clusters
     Safe topology refactoring: moving slaves around the topology
     Sleek topology visualization
     Replication problems visualization
