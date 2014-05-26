@@ -29,4 +29,12 @@ Setup a MySQL server for backend, and invoke the following:
     CREATE DATABASE IF NOT EXISTS orchestrator;
     GRANT ALL PRIVILEGES ON `orchestrator`.* TO 'orchestrator'@'127.0.0.1' IDENTIFIED BY 'orch_backend_password';
 
+Orchestrator uses a configuration file, located in either `/etc/orchestrator.conf.json` or relative path to binary `conf/orchestrator.conf.json` or `orchestrator.conf.json`. Edit this file to match the above as follows:
 
+    ...
+    "MySQLOrchestratorHost": "127.0.0.1",
+    "MySQLOrchestratorPort": 3306,
+    "MySQLOrchestratorDatabase": "orchestrator",
+    "MySQLOrchestratorUser": "orchestrator",
+    "MySQLOrchestratorPassword": "orch_backend_password",
+    ...
