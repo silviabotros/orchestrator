@@ -17,3 +17,7 @@ _Orchestrator_ is developed at [Outbrain](http://www.outbrain.com/) to answer fo
 
 # License
 _Orchestrator_ is released as open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
+
+# Requirements
+_Orchestrator_ is a standalone Go application. It requires a MySQL backend to hold topologies state, maintenance status and audit history. It is built and tested on Linux 64bit, and binaries are availably for this OS type alone. The author has not tested any other operating system, though any other unix-like OS should do just fine.
+
