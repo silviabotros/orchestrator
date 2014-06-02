@@ -227,7 +227,7 @@ Actual risk begins when you modify instances. Namely moving slaves around the to
 
 1. Make sure you only move an instance to a location where it is valid for it to replicate (e.g. that you don't put a 5.5 server below a 5.6 server)
 2. Make sure you move an instance at the right time (ie the instance and whicever affected servers are not lagging badly, so that operation can compeltely in a timely manner).
-3. Do the math correctly: stop the slve at the right time, roll it forward to the right position, `CHANGE MASTER` to the correct location & position.
+3. Do the math correctly: stop the slave at the right time, roll it forward to the right position, `CHANGE MASTER` to the correct location & position.
 
 All the above is tested, and have been put to practice in our production topologies. We have not witnessed a miscalculation or misprotection throughout our production use.
 
