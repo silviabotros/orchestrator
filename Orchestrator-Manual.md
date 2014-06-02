@@ -127,20 +127,19 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/begin-maintenance/:host/:port/:owner/:reason`: declares and begins maintenance mode for an instance.
   While in maintenance mode, _orchestrator_ will not allow moving this instance. 
   (example `/api/begin-maintenance/mysql10/3306/gromit/upgrading+mysql+version`)
-* `/api/end-maintenance/:host/:port", this.EndMaintenanceByInstanceKey) 
-* `/api/end-maintenance/:maintenanceKey", this.EndMaintenance)  
-* `/api/start-slave/:host/:port", this.StartSlave) 
-* `/api/stop-slave/:host/:port", this.StopSlave) 
-* `/api/maintenance", this.Maintenance) 
-* `/api/cluster/:clusterName", this.Cluster) 
-* `/api/clusters", this.Clusters) 
-* `/api/search/:searchString", this.Search) 
-* `/api/search", this.Search) 
-* `/api/problems", this.Problems) 
-* `/api/audit", this.Audit) 
-* `/api/audit/:page", this.Audit) 
+* `/api/end-maintenance/:host/:port`: end maintenance on instance
+* `/api/end-maintenance/:maintenanceKey` end maintenance on instance, based on maintenance key given on `begin-maintenance` 
+* `/api/start-slave/:host/:port`: issue a `START SLAVE` on an instance 
+* `/api/stop-slave/:host/:port`: issue a `STOP SLAVE` on an instance 
+* `/api/maintenance`: list instances in active maintenance mode
+* `/api/cluster/:clusterName`: list instances in a topology cluster. Each topology is automatically given a unique 
+  name. At this point the name is set by the topology's master (and if there's a master-master setup, then one of the masters).
+  For example, a topology's name might be `mysql10:3306`, based on the understanding the server `mysql10` on port `3306`
+  is the master of the topology.  
+* `/api/clusters`: list names of known topologies. 
+* `/api/search/:searchString`: list instances matching search string
+* `/api/problems`: list instances who have known problems (e.g. not replicating, lagging etc.) 
+* `/api/audit`: show most recent audit entries
+* `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
 
-
-
-    
  
