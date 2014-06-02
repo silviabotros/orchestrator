@@ -33,6 +33,8 @@ though any other unix-like OS should do just fine.
 The following assumes you will be using the same machine for both the orchestrator binary and the MySQL backend. 
 If not, replace `127.0.0.1` with appropriate host name. Replace `orch_backend_password` with your own super secret password.
 
+#### Setup backend MySQL server
+
 Setup a MySQL server for backend, and invoke the following:
 
     CREATE DATABASE IF NOT EXISTS orchestrator;
@@ -49,6 +51,7 @@ Orchestrator uses a configuration file, located in either `/etc/orchestrator.con
     "MySQLOrchestratorPassword": "orch_backend_password",
     ...
 
+#### Grant access to orchestrator on all your MySQL servers
 For orchestrator to detect your replication topologies, it must also have an account on each and every topology. At this stage this has to be the 
 same account (same user, same password) for all topologies. On each of your masters, issue the following:
 
