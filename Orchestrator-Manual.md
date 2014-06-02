@@ -106,11 +106,25 @@ The above is useful for development and testing purposes. You probably wish to k
 
 #### Executing as command line
 
+Following is a synopsis of command line samples. For simplicitly, we assume `orchestrator` is in your path.
+If not, replace `orchestrator` with `/path/to/orchestrator`.
+
+Show currently known clusters (replication topologies):
+
+    orchestrator -c clusters cli
+    
+The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
+Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file. 
+You may choose to use a different location for the configuration file, in which case execute:
+
+    orchestrator -c clusters --config=/path/to/config.file cli
+    
+
 ## Using the Web interface
 
 ## Using the web API
 
-If you're a keen web developer, you can quickly see (via Firebug or Developer Tools) how the web interface 
+If you're a keen web developer, you can see (via Firebug or Developer Tools) how the web interface 
 completely relies on JSON API requests. 
 
 The JSON API provides with all the maintenance functionality you can find in the web interface or the 
