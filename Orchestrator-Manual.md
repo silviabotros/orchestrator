@@ -118,7 +118,32 @@ Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it conta
 You may choose to use a different location for the configuration file, in which case execute:
 
     orchestrator -c clusters --config=/path/to/config.file cli
+
+Discover a new instance ("teach" _orchestrator_ about your topology). _Orchestrator_ will automatically recursively drill up the master chain (if any)
+and down the slaves chain (if any) to detect the entire topology:
+
+    The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
+Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file. 
+You may choose to use a different location for the configuration file, in which case execute:
+
+    orchestrator -c discover -i 127.0.0.1:22987 cli
+
+Do the same, and be more verbose:
+
+    orchestrator -c discover -i 127.0.0.1:22987 --debug cli
+
+`--debug` can be useful in all operations.
+
+Forget an instance (an instance may be manually or automatically re-discovered via `discover` command above):
+
+    orchestrator -c forget -i 127.0.0.1:22987 cli
     
+Print an ASCII tree of topology instances. Pass a cluster name via `-i` (see `clusters` command above):
+
+    orchestrator -c topology -i 127.0.0.1:22987 cli
+    
+    
+     
 
 ## Using the Web interface
 
