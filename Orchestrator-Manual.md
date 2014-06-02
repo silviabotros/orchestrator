@@ -109,6 +109,9 @@ The above is useful for development and testing purposes. You probably wish to k
 Following is a synopsis of command line samples. For simplicitly, we assume `orchestrator` is in your path.
 If not, replace `orchestrator` with `/path/to/orchestrator`.
 
+Samples below use a test `mysqlsandbox` topology, where all instances are on same host `127.0.0.1` and on different ports. `22987` is master, 
+and `22988`, `22989`, `22990` are slaves. 
+
 Show currently known clusters (replication topologies):
 
     orchestrator -c clusters cli
@@ -142,6 +145,13 @@ Print an ASCII tree of topology instances. Pass a cluster name via `-i` (see `cl
 
     orchestrator -c topology -i 127.0.0.1:22987 cli
     
+Example output:
+
+    127.0.0.1:22987
+    + 127.0.0.1:22989
+      + 127.0.0.1:22988
+    + 127.0.0.1:22990
+        
 Move a slave up the topology (make it sbling of its master, or direct slave of its "grandparent"):
 
     orchestrator -c move-up -i 127.0.0.1:22988 cli
@@ -156,7 +166,11 @@ The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` a
 and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
 
         
-     
+Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow moving this instance:
+
+    orchestrator -c begin-maintenance -i 127.0.0.1:22988 cli
+
+
 
 ## Using the Web interface
 
