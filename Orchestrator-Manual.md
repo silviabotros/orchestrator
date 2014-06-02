@@ -170,6 +170,13 @@ Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_
 
     orchestrator -c begin-maintenance -i 127.0.0.1:22988 cli
 
+End maintenance mode on an instance:
+
+    orchestrator -c end-maintenance -i 127.0.0.1:22988 cli
+
+Make an infinite, continuous discovery and investigation of known instances. Typically this is what the web service executes.
+
+    orchestrator -c continuous --debug cli
 
 
 ## Using the Web interface
