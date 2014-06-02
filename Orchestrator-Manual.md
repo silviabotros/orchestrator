@@ -88,4 +88,23 @@ If you like your debug messages, issue:
     cd /usr/local/orchestrator && ./orchestrator --debug http
 
 The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
-Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file.
+Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file. 
+You may choose to use a different location for the configuration file, in which case execute:
+
+    cd /usr/local/orchestrator && ./orchestrator --debug --config=/path/to/config.file http
+ 
+Web/API service will, by default, issue a continuous, infinite polling of all known servers. This keeps _orchestrator_'s data up to date.
+You typically want this behavious, but you may disable it, making _orchestrator_ just serve API/Web but never update the instances status:
+
+    cd /usr/local/orchestrator && ./orchestrator --discovery=false http
+    
+The above is useful for development and testing purposes. You probably wish to keep to the defaults.
+
+#### Executing as command line
+
+## Accessing the Web interface
+
+## Using the web API
+
+    
+ 
