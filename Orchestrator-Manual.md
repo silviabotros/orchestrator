@@ -123,7 +123,10 @@ The following is a brief listing of the web API exposed by _orchestrator_:
   following up on its master or one of its slaves. 
 * `/api/move-up/:host/:port` (attempt to) move this instacne up the topology (make it child of its grandparent)
 * `/api/move-below/:host/:port/:siblingHost/:siblingPort` (attempt to) move an instance below its sibling.
-* `/api/begin-maintenance/:host/:port/:owner/:reason", this.BeginMaintenance) 
+  the two provided instances must be siblings: slaves of the same master. (example `/api/move-below/mysql10/3306/mysql24/3306`)
+* `/api/begin-maintenance/:host/:port/:owner/:reason`: declares and begins maintenance mode for an instance.
+  While in maintenance mode, _orchestrator_ will not allow moving this instance. 
+  (example `/api/begin-maintenance/mysql10/3306/gromit/upgrading+mysql+version`)
 * `/api/end-maintenance/:host/:port", this.EndMaintenanceByInstanceKey) 
 * `/api/end-maintenance/:maintenanceKey", this.EndMaintenance)  
 * `/api/start-slave/:host/:port", this.StartSlave) 
