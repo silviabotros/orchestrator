@@ -23,7 +23,7 @@ _Orchestrator_ is released as open source under the [Apache 2.0 license](http://
 
 # Download
 _Orchestrator_ is released as open source and is available at: https://github.com/outbrain/orchestrator
-. Fine official releases in https://github.com/outbrain/orchestrator/releases
+. Find official releases in https://github.com/outbrain/orchestrator/releases
  
 # Requirements
 _Orchestrator_ is a standalone Go application. It requires a MySQL backend to hold topologies state, maintenance status and audit history. 
