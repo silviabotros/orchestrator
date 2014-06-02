@@ -238,7 +238,7 @@ and evil stuff can happen, and there is a risk in a slave losing its position vs
 Now that you're a bit more scared, it's time to reflect: how much did your hands tremble when you navigated your slaves _by hand_ up and down through the topology? 
 We suspect the automation provided by _orchestrator_ makes for a _safer_ management mechanism than we get with our shaking hands.
 
-Also, read the [LICENSE](https://github.com/outbrain/orchestrator/blob/master/LICENSE).
+Also, read the [LICENSE](https://github.com/outbrain/orchestrator/blob/master/LICENSE), and especially the "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND" part.
  
  
  
