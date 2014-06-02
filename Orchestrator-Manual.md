@@ -84,6 +84,8 @@ the `resources` directory and all that is underneath it.
 Assuming you've installed _orchestrator_ under `/usr/local/orchestrator`:
 
     cd /usr/local/orchestrator && ./orchestrator http
+
+That's it, you're ready to go. You may skip to next sections.
     
 If you like your debug messages, issue:
 
