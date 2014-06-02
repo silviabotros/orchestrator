@@ -216,4 +216,28 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/audit`: show most recent audit entries
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
 
+
+## Risks
+
+Most of the time _orchestrator_ only reads status from your topologies. Default configuration is to poll each instance once per minute.
+This is very relaxed, and you can go way more intensive than that. But do be aware that _orchestrator_ opens connections to all your servers
+(and typically reuses them).
+
+Actual risk begin when you modify instances. Namely moving slaves around the topology. _Orchestrator_ does its best to:
+
+1. Make sure you only move an instance to a location where it is valid for it to replicate (e.g. that you don't put a 5.5 server below a 5.6 server)
+2. Make sure you move an instance at the right time (ie the instance and whicever affected servers are not lagging badly, so that operation can compeltely in a timely manner).
+3. Do the math correctly: stop the slve at the right time, roll it forward to the right position, `CHANGE MASTER` to the correct location & position.
+
+All the above is tested, and have been put to practice in our production topologies. We have not witnessed a miscalculation or misprotection throughout our production use.
+
+When _orchestrator_ encounters an error throught the moving process, it does its best to rollback. However extreme cases such as a new master crashing in the middle of the move
+may leave the topology unstable (though the same instance could crash before the mvoe and leave whatever topology it was in charge of unstable just as well). Point being - weird
+and evil stuff can happen, and there is a risk in a slave losing its position vs. its master.
+
+Now that you're a bit more scared, it's time to reflect: how much did your hands tremble when you navigated your slaves _by hand_ up and down through the topology? 
+We suspect the automation provided by _orchestrator_ makes for a _safer_ management mechanism than we get with our shaking hands.
+
+ 
+ 
  
