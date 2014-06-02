@@ -18,6 +18,8 @@ _Orchestrator_ is developed at [Outbrain](http://www.outbrain.com/) to answer fo
 At the time of _orchestrator_ creation GTID is available via MySQL 5.6 and MariaDB 10.0. And yet GTID is still not as mature as one would hope for. 
 The majority of users still use plain-old binlog file:position based MySQL replication, and apparently this will hold for some time. 
 
+![Orcehstrator screenshot](images/orchestrator-simple.png)
+
 ## License
 _Orchestrator_ is released as open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -79,7 +81,7 @@ the `resources` directory and all that is underneath it.
 
 #### Executing as web/API service
 
-Again, assuming you've installed _orchestrator_ under `/usr/local/orchestrator`:
+Assuming you've installed _orchestrator_ under `/usr/local/orchestrator`:
 
     cd /usr/local/orchestrator && ./orchestrator http
     
