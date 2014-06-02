@@ -142,7 +142,20 @@ Print an ASCII tree of topology instances. Pass a cluster name via `-i` (see `cl
 
     orchestrator -c topology -i 127.0.0.1:22987 cli
     
-    
+Move a slave up the topology (make it sbling of its master, or direct slave of its "grandparent"):
+
+    orchestrator -c move-up -i 127.0.0.1:22988 cli
+
+The above command will only succeed if the instance _has_ a grandparent, and does nto have _problems_ such as slave lag etc.
+
+Move a slave below its sibling:
+
+    orchestrator -c move-below -i 127.0.0.1:22988 -s 127.0.0.1:22990 --debug cli
+
+The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` are siblings (slaves of same master), none of them has _problems_ (e.g. slave lag),
+and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
+
+        
      
 
 ## Using the Web interface
