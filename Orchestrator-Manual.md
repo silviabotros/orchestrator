@@ -65,7 +65,7 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
 #### Extract orchestrator binary and files
 
 Extract the archive you've downloaded from https://github.com/outbrain/orchestrator/releases
-For example, let's assume you wish to install _orchestrator_ under `/usr/local`:
+For example, let's assume you wish to install _orchestrator_ under `/usr/local/orchestrator`:
 
     sudo mkdir -p /usr/local/orchestrator
     sudo cd /usr/local/orchestrator
@@ -75,5 +75,17 @@ To execute _orchestrator_ in command line mode or in HTTP API only, all you need
 To enjoy the rich web interface, including topology visualizations and drag-and-drop topology changes, you will need 
 the `resources` directory and all that is underneath it.
 
+## Execution
 
+#### Executing as web/API service
+
+Again, assuming you've installed _orchestrator_ under `/usr/local/orchestrator`:
+
+    cd /usr/local/orchestrator && ./orchestrator http
     
+If you like your debug messages, issue:
+
+    cd /usr/local/orchestrator && ./orchestrator --debug http
+
+The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
+Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file.
