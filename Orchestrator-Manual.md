@@ -104,9 +104,40 @@ The above is useful for development and testing purposes. You probably wish to k
 
 #### Executing as command line
 
-## Accessing the Web interface
+## Using the Web interface
 
 ## Using the web API
+
+If you're a keen web developer, you can quickly see (via Firebug or Developer Tools) how the web interface 
+completely relies on JSON API requests. 
+
+The JSON API provides with all the maintenance functionality you can find in the web interface or the 
+command line mode.
+
+The following is a brief listing of the web API exposed by _orchestrator_:
+
+* `/api/instance/:host/:port`: reads and returns an instance's details (example `/api/instance/mysql10/3306`)
+* `/api/discover/:host/:port`: discover given instance and all the topology it is associated with (example `/api/discover/mysql10/3306`)
+* `/api/refresh/:host/:port`: synchronously re-read instance status 
+* `/api/forget/:host/:port`: remove records of this instance. It may be automatically rediscovered by 
+  following up on its master or one of its slaves. 
+* `/api/move-up/:host/:port` (attempt to) move this instacne up the topology (make it child of its grandparent)
+* `/api/move-below/:host/:port/:siblingHost/:siblingPort` (attempt to) move an instance below its sibling.
+* `/api/begin-maintenance/:host/:port/:owner/:reason", this.BeginMaintenance) 
+* `/api/end-maintenance/:host/:port", this.EndMaintenanceByInstanceKey) 
+* `/api/end-maintenance/:maintenanceKey", this.EndMaintenance)  
+* `/api/start-slave/:host/:port", this.StartSlave) 
+* `/api/stop-slave/:host/:port", this.StopSlave) 
+* `/api/maintenance", this.Maintenance) 
+* `/api/cluster/:clusterName", this.Cluster) 
+* `/api/clusters", this.Clusters) 
+* `/api/search/:searchString", this.Search) 
+* `/api/search", this.Search) 
+* `/api/problems", this.Problems) 
+* `/api/audit", this.Audit) 
+* `/api/audit/:page", this.Audit) 
+
+
 
     
  
