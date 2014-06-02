@@ -22,8 +22,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 _Orchestrator_ is released as open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
 
 # Download
-_Orchestrator_ is released as open source and is available at: https://github.com/outbrain/orchestrator
-. Find official releases in https://github.com/outbrain/orchestrator/releases
+_Orchestrator_ is released as open source and is available at [GitHub](https://github.com/outbrain/orchestrator). Find official releases in https://github.com/outbrain/orchestrator/releases
  
 # Requirements
 _Orchestrator_ is a standalone Go application. It requires a MySQL backend to hold topologies state, maintenance status and audit history. 
