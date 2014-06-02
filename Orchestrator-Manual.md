@@ -145,7 +145,7 @@ Print an ASCII tree of topology instances. Pass a cluster name via `-i` (see `cl
 
     orchestrator -c topology -i 127.0.0.1:22987 cli
     
-Example output:
+Sample output:
 
     127.0.0.1:22987
     + 127.0.0.1:22989
