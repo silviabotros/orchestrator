@@ -167,6 +167,16 @@ Move a slave below its sibling:
 The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` are siblings (slaves of same master), none of them has _problems_ (e.g. slave lag),
 and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
 
+`move-up` and `move-below` are the two building blocks of topology refactoring. With these two actions one
+can make any change to the topology, with the exception of moving the master. These two actions are also
+as atomic as possible, by only affecting two replication servers per action (`move-up` affects 
+the instance and its master; `move-below` affect the instance and its sibling). 
+
+_Orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
+since this would require affecting multiple servers, increasing the chance for something to go wrong or for the
+total operation time to become prohibitively high without the DBA having a chance to get involved.
+Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
+We also observed that it takes little extra time to initiate such multiple steps. 
         
 Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow moving this instance:
 
