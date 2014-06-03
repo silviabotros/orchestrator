@@ -14,7 +14,8 @@ No. Orchestrator is strictly NOT a monitoring tool. There is no intention to mak
 
 ### What kind of replication does orchestrator support?
 
-Orchestrator supports "plain-old-MySQL-replication", the one that uses binary log files and positions. If you don't know what you're using, this is probably the one. It is the only type of replication up to and including MySQL 5.5.
+Orchestrator supports "plain-old-MySQL-replication", the one that uses binary log files and positions. 
+If you don't know what you're using, this is probably the one. It is the only type of replication up to and including MySQL 5.5.
 
 ### Does orchestrator support Row Based Replication?
 
@@ -22,21 +23,26 @@ Yes. Statement Based Replication and Row Based Replication are both supported (a
 
 ### Does orchestrator support Master-Master (ring) Replication?
 
-Yes, for a ring of two masters (active-active, active-passive). Do note that the tree visualization cannot present the circular replication, and will pick an arbitrary master as the root of the tree.
+Yes, for a ring of two masters (active-active, active-passive). Do note that the tree visualization cannot present the circular replication, 
+and will pick an arbitrary master as the root of the tree.
 
-Master-Master-Master[-Master...] topologies, where the ring is composed of 3 or more masters are not supported and not tested. And are discouraged. And are an abomination.
+Master-Master-Master[-Master...] topologies, where the ring is composed of 3 or more masters are not supported and not tested. 
+And are discouraged. And are an abomination.
 
 ### Does orchestrator support Galera Replication?
 
-Yes and no. Orchestrator is unaware of Galera replication. If you have three Galera masters and different slave topologies under each master, then orchestrator sees these as three different topologies.
+Yes and no. Orchestrator is unaware of Galera replication. If you have three Galera masters and different slave topologies under each master, 
+then orchestrator sees these as three different topologies.
 
 ### Does orchestrator support GTID Replication?
 
-Not at this stage. This is mainly because the developers of orchestrator feel GTID is not yet complete, and are anyhow not using a MySQL which supports GTID. It is likely that GTID will be supported in the future.
+Not at this stage. This is mainly because the developers of orchestrator feel GTID is not yet complete, 
+and are anyhow not using a MySQL version which supports GTID. It is likely that GTID will be supported in the future.
 
 ### Does orchestrator support Parallel Replication?
 
-No. This is because START SLAVE UNTIL is not supported in parallel replication, and output of SHOW SLAVE STATUS is incomplete. There is no expected work on this.
+No. This is because `START SLAVE UNTIL` is not supported in parallel replication, and output of `SHOW SLAVE STATUS` is incomplete. 
+There is no expected work on this.
 
 ### Does orchestrator support Multi-Master Replication?
 
