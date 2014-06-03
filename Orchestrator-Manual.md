@@ -223,13 +223,11 @@ The following is a complete list of configuration parameters:
 
 * `MySQLTopologyUser`       string, credentials for replication topology servers (masters & slaves)          
 * `MySQLTopologyPassword`   string, credentials for replication topology servers (masters & slaves)
-
 * `MySQLOrchestratorHost`   string, hostname for backend MySQL server
 * `MySQLOrchestratorPort`   uint, port for backend MySQL server
 * `MySQLOrchestratorDatabase`   string, name of backend MySQL server schema
 * `MySQLOrchestratorUser`       string, credentials for backend MySQL server
 * `MySQLOrchestratorPassword`   string, credentials for backend MySQL server
-
 * `SlaveLagQuery`               string, custom query to check on slave lg (e.g. heartbeat table). If unprovided,
   slave's `Seconds_Behind_Master` is used.
 * `SlaveStartPostWaitMilliseconds`  int     // Time to wait after START SLAVE before re-readong instance (give slave chance to connect to master)
