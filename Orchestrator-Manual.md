@@ -201,8 +201,8 @@ completely relies on JSON API requests.
 The JSON API provides with all the maintenance functionality you can find in the web interface or the 
 command line mode.
 
-Most users will not be interested in accessing the API. If you're unsure: you don't need it.
-For creators of frameworks and maintenance tools, it may provide with great powers (and great responsibility).
+> Most users will not be interested in accessing the API. If you're unsure: you don't need it.
+> For creators of frameworks and maintenance tools, it may provide with great powers (and great responsibility).
 
 The following is a brief listing of the web API exposed by _orchestrator_:
 
