@@ -236,10 +236,10 @@ The following is a complete list of configuration parameters:
 * `UnseenInstanceForgetHours`   uint, Number of hours after which an unseen instance is forgotten
 * `DiscoveryPollSeconds`        int, Auto/continuous discovery of instances sleep time between polls
 * `ReasonableReplicationLagSeconds` int, Above this value is considered a problem
-* `ReasonableMaintenanceReplicationLagSeconds` int // Above this value move-up and move-below are blocked
-* `AuditPageSize`       int
-* `HTTPAuthUser`        string              // Username for HTTP Basic authentication (blank disables authentication)
-* `HTTPAuthPassword`    string              // Password for HTTP Basic authentication
+* `ReasonableMaintenanceReplicationLagSeconds` int, Above this value move-up and move-below are blocked
+* `AuditPageSize`       int, Number of entries in an audit page
+* `HTTPAuthUser`        string, Username for HTTP Basic authentication (blank disables authentication)
+* `HTTPAuthPassword`    string, Password for HTTP Basic authentication
 
 
 
