@@ -85,7 +85,8 @@ Assuming you've installed _orchestrator_ under `/usr/local/orchestrator`:
 
     cd /usr/local/orchestrator && ./orchestrator http
 
-That's it, you're ready to go. You may skip to next sections.
+_Orchestrator_ will start listening on port `3000`. Point your browser to `http://your_host:3000/` 
+and you're ready to go. You may skip to next sections.
     
 If you like your debug messages, issue:
 
