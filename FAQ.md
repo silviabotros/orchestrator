@@ -10,7 +10,7 @@ topology changelog. It can serve as a command line tool or it can provide with J
 
 ### Is this yet another monitoring tool?
 
-No. Orchestrator is strictly NOT a monitoring tool. There is no intention to make it so; no alerts or emails. It does provide with online visualization of your topology status though, and requires some thresholds of its own in order to manage the topology.
+No. Orchestrator is strictly _not_ a monitoring tool. There is no intention to make it so; no alerts or emails. It does provide with online visualization of your topology status though, and requires some thresholds of its own in order to manage the topology.
 
 ### What kind of replication does orchestrator support?
 
