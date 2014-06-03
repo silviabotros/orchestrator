@@ -27,7 +27,7 @@ _Orchestrator_ is released as open source under the [Apache 2.0 license](http://
 _Orchestrator_ is released as open source and is available at [GitHub](https://github.com/outbrain/orchestrator). Find official releases in https://github.com/outbrain/orchestrator/releases
  
 ## Requirements
-_Orchestrator_ is a standalone Go application. It requires a MySQL backend to hold topologies state, maintenance status and audit history. 
+_Orchestrator_ is a standalone Go application. It requires a MySQL backend to store topologies state, maintenance status and audit history. 
 It is built and tested on Linux 64bit, and binaries are availably for this OS type alone. The author has not tested any other operating system, 
 though any other unix-like OS should do just fine.
 
@@ -98,7 +98,7 @@ You may choose to use a different location for the configuration file, in which 
     cd /usr/local/orchestrator && ./orchestrator --debug --config=/path/to/config.file http
  
 Web/API service will, by default, issue a continuous, infinite polling of all known servers. This keeps _orchestrator_'s data up to date.
-You typically want this behavious, but you may disable it, making _orchestrator_ just serve API/Web but never update the instances status:
+You typically want this behavior, but you may disable it, making _orchestrator_ just serve API/Web but never update the instances status:
 
     cd /usr/local/orchestrator && ./orchestrator --discovery=false http
     
@@ -122,10 +122,14 @@ You may choose to use a different location for the configuration file, in which 
 
     orchestrator -c clusters --config=/path/to/config.file cli
 
+`-c` stands for `command`, and is mandatory.
+
 Discover a new instance ("teach" _orchestrator_ about your topology). _Orchestrator_ will automatically recursively drill up the master chain (if any)
 and down the slaves chain (if any) to detect the entire topology:
 
     orchestrator -c discover -i 127.0.0.1:22987 cli
+
+`-i` stands for `instance` and must be in the form `hostname:port`.
 
 Do the same, and be more verbose:
 
@@ -157,6 +161,8 @@ The above command will only succeed if the instance _has_ a grandparent, and doe
 Move a slave below its sibling:
 
     orchestrator -c move-below -i 127.0.0.1:22988 -s 127.0.0.1:22990 --debug cli
+
+`-s` stands for `sibling`.
 
 The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` are siblings (slaves of same master), none of them has _problems_ (e.g. slave lag),
 and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
