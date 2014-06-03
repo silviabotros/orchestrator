@@ -234,6 +234,21 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
 
 
+## Security
+
+When operating in HTTP mode (API or Web), access to _orchestrator_ may be restricted via _basic authentication_.
+Add the following to _orchestrator_'s configuration file:
+
+    "HTTPAuthUser":     "dba_team",
+    "HTTPAuthPassword": "time_for_dinner"
+
+At this stage there is no LDAP integration, nor per-user credentials. Just this one single credential.
+Authentication is likely to be enhanced in the future.
+
+_Orchestrator_'s configuration file contains credentials to your MySQL servers as well as _basic authentication_
+credentials as specified above. Keep it safe (e.g. `chmod 600`). 
+
+
 ## Configuration
 
 The following is a complete list of configuration parameters:
@@ -258,21 +273,6 @@ The following is a complete list of configuration parameters:
 * `HTTPAuthUser`        (string), Username for HTTP Basic authentication (blank disables authentication)
 * `HTTPAuthPassword`    (string), Password for HTTP Basic authentication
 
-
-
-## Security
-
-When operating in HTTP mode (API or Web), access to _orchestrator_ may be restricted via _basic authentication_.
-Add the following to _orchestrator_'s configuration file:
-
-    "HTTPAuthUser":     "dba_team",
-    "HTTPAuthPassword": "time_for_dinner"
-
-At this stage there is no LDAP integration, nor per-user credentials. Just this one single credential.
-Authentication is likely to be enhanced in the future.
-
-_Orchestrator_'s configuration file contains credentials to your MySQL servers as well as _basic authentication_
-credentials as specified above. Keep it safe (e.g. `chmod 600`). 
 
 ## Risks
 
