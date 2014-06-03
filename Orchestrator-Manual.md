@@ -1,5 +1,3 @@
-:with_toc_data
-
 ## About
 
 _Orchestrator_ is a MySQL replication topology management and visualization tool, allowing for:
