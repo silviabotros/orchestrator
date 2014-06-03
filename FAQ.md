@@ -1,6 +1,12 @@
 ### Who should use orchestrator?
 
-DBAs and ops who have more than a mere master-slave replication topology.
+DBAs and ops who have more than a mere single-master-single-slave replication topology.
+
+### What can orchestrator do for me?
+
+Orchestrator analyzes your replication topologies. It can visualize those topologies, and it allows you to 
+move slaves around the topology easily and safely. It provides full audit to operations making for a 
+topology changelog. It can serve as a command line tool or it can provide with JSON API for all operations.
 
 ### Is this yet another monitoring tool?
 
