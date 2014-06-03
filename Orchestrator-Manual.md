@@ -297,5 +297,14 @@ We suspect the automation provided by _orchestrator_ makes for a _safer_ managem
 
 Also, read the [LICENSE](https://github.com/outbrain/orchestrator/blob/master/LICENSE), and especially the "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND" part.
  
- 
- 
+
+## Bugs
+
+Please report bugs on the [Issues page](https://github.com/outbrain/orchestrator/issues)
+
+
+## Contributions
+
+Yes, please. All contributions must be licensed under the 
+[Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) or compatible.
+
