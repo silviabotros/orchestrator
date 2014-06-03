@@ -230,8 +230,8 @@ The following is a complete list of configuration parameters:
 * `MySQLOrchestratorPassword`   string, credentials for backend MySQL server
 * `SlaveLagQuery`               string, custom query to check on slave lg (e.g. heartbeat table). If unprovided,
   slave's `Seconds_Behind_Master` is used.
-* `SlaveStartPostWaitMilliseconds`  int, Time to wait after START SLAVE before re-reading instance (give slave chance to connect to master)
-* `DiscoverByShowSlaveHosts`    bool, Attempt SHOW SLAVE HOSTS before PROCESSLIST
+* `SlaveStartPostWaitMilliseconds`  int, Time to wait after `START SLAVE` before re-reading instance (give slave chance to connect to master)
+* `DiscoverByShowSlaveHosts`    bool, Attempt `SHOW SLAVE HOSTS` before `SHOW PROCESSLIST`
 * `InstancePollSeconds`         uint, Number of seconds between instance reads
 * `UnseenInstanceForgetHours`   uint, Number of hours after which an unseen instance is forgotten
 * `DiscoveryPollSeconds`        int, Auto/continuous discovery of instances sleep time between polls
