@@ -109,8 +109,8 @@ The above is useful for development and testing purposes. You probably wish to k
 Following is a synopsis of command line samples. For simplicitly, we assume `orchestrator` is in your path.
 If not, replace `orchestrator` with `/path/to/orchestrator`.
 
-Samples below use a test `mysqlsandbox` topology, where all instances are on same host `127.0.0.1` and on different ports. `22987` is master, 
-and `22988`, `22989`, `22990` are slaves. 
+> Samples below use a test `mysqlsandbox` topology, where all instances are on same host `127.0.0.1` and on different ports. `22987` is master, 
+> and `22988`, `22989`, `22990` are slaves. 
 
 Show currently known clusters (replication topologies):
 
@@ -122,20 +122,20 @@ You may choose to use a different location for the configuration file, in which 
 
     orchestrator -c clusters --config=/path/to/config.file cli
 
-`-c` stands for `command`, and is mandatory.
+> `-c` stands for `command`, and is mandatory.
 
 Discover a new instance ("teach" _orchestrator_ about your topology). _Orchestrator_ will automatically recursively drill up the master chain (if any)
 and down the slaves chain (if any) to detect the entire topology:
 
     orchestrator -c discover -i 127.0.0.1:22987 cli
 
-`-i` stands for `instance` and must be in the form `hostname:port`.
+> `-i` stands for `instance` and must be in the form `hostname:port`.
 
 Do the same, and be more verbose:
 
     orchestrator -c discover -i 127.0.0.1:22987 --debug cli
 
-`--debug` can be useful in all operations.
+> `--debug` can be useful in all operations.
 
 Forget an instance (an instance may be manually or automatically re-discovered via `discover` command above):
 
@@ -145,12 +145,12 @@ Print an ASCII tree of topology instances. Pass a cluster name via `-i` (see `cl
 
     orchestrator -c topology -i 127.0.0.1:22987 cli
     
-Sample output:
-
-    127.0.0.1:22987
-    + 127.0.0.1:22989
-      + 127.0.0.1:22988
-    + 127.0.0.1:22990
+> Sample output:
+> 
+>     127.0.0.1:22987
+>     + 127.0.0.1:22989
+>       + 127.0.0.1:22988
+>     + 127.0.0.1:22990
         
 Move a slave up the topology (make it sbling of its master, or direct slave of its "grandparent"):
 
@@ -162,21 +162,21 @@ Move a slave below its sibling:
 
     orchestrator -c move-below -i 127.0.0.1:22988 -s 127.0.0.1:22990 --debug cli
 
-`-s` stands for `sibling`.
+> `-s` stands for `sibling`.
 
 The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` are siblings (slaves of same master), none of them has _problems_ (e.g. slave lag),
 and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
 
-`move-up` and `move-below` are the two building blocks of topology refactoring. With these two actions one
-can make any change to the topology, with the exception of moving the master. These two actions are also
-as atomic as possible, by only affecting two replication servers per action (`move-up` affects 
-the instance and its master; `move-below` affect the instance and its sibling). 
+> `move-up` and `move-below` are the two building blocks of topology refactoring. With these two actions one
+> can make any change to the topology, with the exception of moving the master. These two actions are also
+> as atomic as possible, by only affecting two replication servers per action (`move-up` affects 
+> the instance and its master; `move-below` affect the instance and its sibling). 
 
-_Orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
-since this would require affecting multiple servers, increasing the chance for something to go wrong or for the
-total operation time to become prohibitively high without the DBA having a chance to get involved.
-Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
-We also observed that it takes little extra time to initiate such multiple steps. 
+> _Orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
+> since this would require affecting multiple servers, increasing the chance for something to go wrong or for the
+> total operation time to become prohibitively high without the DBA having a chance to get involved.
+> Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
+> We also observed that it takes little extra time to initiate such multiple steps. 
         
 Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow moving this instance:
 
