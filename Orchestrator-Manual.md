@@ -221,14 +221,14 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 
 The following is a complete list of configuration parameters:
 
-* `MySQLTopologyUser`       string
-* `MySQLTopologyPassword`   string
+* `MySQLTopologyUser`       string, credentials for replication topology servers (masters & slaves)          
+* `MySQLTopologyPassword`   string, credentials for replication topology servers (masters & slaves)
 
-* `MySQLOrchestratorHost`   string
-* `MySQLOrchestratorPort`   uint
-* `MySQLOrchestratorDatabase`   string
-* `MySQLOrchestratorUser`       string
-* `MySQLOrchestratorPassword`   string
+* `MySQLOrchestratorHost`   string, hostname for backend MySQL server
+* `MySQLOrchestratorPort`   uint, port for backend MySQL server
+* `MySQLOrchestratorDatabase`   string, name of backend MySQL server schema
+* `MySQLOrchestratorUser`       string, credentials for backend MySQL server
+* `MySQLOrchestratorPassword`   string, credentials for backend MySQL server
 
 * `SlaveLagQuery`               string      // custom query to check on slave lg (e.g. heartbeat table)
 * `SlaveStartPostWaitMilliseconds`  int     // Time to wait after START SLAVE before re-readong instance (give slave chance to connect to master)
