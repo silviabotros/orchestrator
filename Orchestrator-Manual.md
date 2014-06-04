@@ -197,7 +197,7 @@ Make an infinite, continuous discovery and investigation of known instances. Typ
 
 ## Using the web API
 
-If you're a keen web developer, you can see (via Firebug or Developer Tools) how the web interface 
+A keen web developer would notice (via Firebug or Developer Tools) how the web interface 
 completely relies on JSON API requests. 
 
 The JSON API provides with all the maintenance functionality you can find in the web interface or the 
