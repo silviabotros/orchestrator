@@ -157,7 +157,7 @@ Move a slave up the topology (make it sbling of its master, or direct slave of i
 
     orchestrator -c move-up -i 127.0.0.1:22988 cli
 
-The above command will only succeed if the instance _has_ a grandparent, and does nto have _problems_ such as slave lag etc.
+The above command will only succeed if the instance _has_ a grandparent, and does not have _problems_ such as slave lag etc.
 
 Move a slave below its sibling:
 
@@ -179,7 +179,8 @@ and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slav
 > Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
 > We also observed that it takes little extra time to initiate such multiple steps. 
         
-Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow moving this instance:
+Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow this instance to
+be moved or participate in another instance's move:
 
     orchestrator -c begin-maintenance -i 127.0.0.1:22988 cli
 
