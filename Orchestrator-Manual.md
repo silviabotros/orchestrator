@@ -20,20 +20,25 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 
 ![Orcehstrator screenshot](images/orchestrator-simple.png)
 
+
 ## License
 _Orchestrator_ is released as open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
 
+
 ## Download
 _Orchestrator_ is released as open source and is available at [GitHub](https://github.com/outbrain/orchestrator). Find official releases in https://github.com/outbrain/orchestrator/releases
+
  
 ## Requirements
 _Orchestrator_ is a standalone Go application. It requires a MySQL backend to store topologies state, maintenance status and audit history. 
 It is built and tested on Linux 64bit, and binaries are availably for this OS type alone. The author has not tested any other operating system, 
 though any other unix-like OS should do just fine.
 
+
 ## Installation
 The following assumes you will be using the same machine for both the _orchestrator_ binary and the MySQL backend. 
 If not, replace `127.0.0.1` with appropriate host name. Replace `orch_backend_password` with your own super secret password.
+
 
 #### Setup backend MySQL server
 
@@ -53,6 +58,7 @@ _Orchestrator_ uses a configuration file, located in either `/etc/orchestrator.c
     "MySQLOrchestratorPassword": "orch_backend_password",
     ...
 
+
 #### Grant access to orchestrator on all your MySQL servers
 For _orchestrator_ to detect your replication topologies, it must also have an account on each and every topology. At this stage this has to be the 
 same account (same user, same password) for all topologies. On each of your masters, issue the following:
@@ -63,6 +69,7 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
 
     "MySQLTopologyUser": "orchestrator",
     "MySQLTopologyPassword": "orch_topology_password",
+
 
 #### Extract orchestrator binary and files
 
@@ -77,7 +84,9 @@ To execute _orchestrator_ in command line mode or in HTTP API only, all you need
 To enjoy the rich web interface, including topology visualizations and drag-and-drop topology changes, you will need 
 the `resources` directory and all that is underneath it.
 
+
 ## Execution
+
 
 #### Executing as web/API service
 
@@ -104,6 +113,7 @@ You typically want this behavior, but you may disable it, making _orchestrator_ 
     cd /usr/local/orchestrator && ./orchestrator --discovery=false http
     
 The above is useful for development and testing purposes. You probably wish to keep to the defaults.
+
 
 #### Executing as command line
 
@@ -287,6 +297,7 @@ The `Audit` page presents with all actions taken via _orchestrator_: slave move,
 
 ![Orcehstrator screenshot](images/orchestrator-audit-small.png)
 
+
 ## Using the web API
 
 A keen web developer would notice (via Firebug or Developer Tools) how the web interface 
@@ -403,7 +414,7 @@ This sample is followed by a field breakdown:
 * `ReadBinlogCoordinates`: (when replicating) the coordinates being read from the master (what `IO_THREAD` polls)
 * `ExecBinlogCoordinates`: (when replicating) the master's coordinates that are being executed right now (what `SQL_THREAD` executed)
 * `SecondsBehindMaster`: direct mapping from `SHOW SLAVE STATUS`'s `Seconds_Behind_Master`
-    `Valid: false` indicates a `NULL`
+    `"Valid": false` indicates a `NULL`
 * `SlaveLagSeconds`: when `SlaveLagQuery` provided, the computed slave lag; otherwise same as `SecondsBehindMaster`
 * `SlaveHosts`: list of MySQL slaves *hostname & port)
 * `ClusterName`: name of cluster this instance is associated with; uniquely identifies cluster
@@ -411,6 +422,7 @@ This sample is followed by a field breakdown:
 * `IsUpToDate`: whether this data is up to date
 * `IsRecentlyChecked`: whether a read attempt on this instance has been recently made
 * `SecondsSinceLastSeen`: time elapsed since last successfully accessed this instance
+ 
  
 ## Security
 
