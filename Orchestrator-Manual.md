@@ -217,18 +217,20 @@ _currently replicating_. So if you know you have some slves which are temporaril
 to add them manually, or, if you like to see automation in work, just wait until they're up, at which
 time _orchestrator_ will automaticaly find them.
 
-One _orchestrator_ is familiar with a server, it doesn't care if the server is lagging, not replicating
-or inaccessible. The server is still part of the topology it was last seen in. There is a timeout for
-that: if a server is not seen by `UnseenInstanceForgetHours` hours, it is automaticaaly forgotten
-(presumed dead). Again, if it suddenly comes back to life, and connects to a known topology, it is 
-automatically re-discovered.
+> Once _orchestrator_ is familiar with a server, it doesn't care if the server is lagging, not replicating
+> or inaccessible. The server is still part of the topology it was last seen in. There is a timeout for
+> that: if a server is not seen by `UnseenInstanceForgetHours` hours, it is automaticaaly forgotten
+> (presumed dead). Again, if it suddenly comes back to life, and connects to a known topology, it is 
+> automatically re-discovered.
 
 ![Orcehstrator screenshot](images/orchestrator-discover.png)
 
 Once _orchestrator_ is familiar with a topology, you can view and manipulate it via the `cluster` page.
 Click the `clusters` drop down on navigation bar to see available clusters.
 
-Each topology is associated with a _cluster name_, which is (currently) named after the topology's master.
+> Each topology is associated with a _cluster name_, which is (currently) named after the topology's master.
+
+
 
 ![Orcehstrator screenshot](images/orchestrator-simple.png)
 
