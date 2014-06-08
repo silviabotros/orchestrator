@@ -390,6 +390,27 @@ This sample is followed by a field breakdown:
 }
 ```
 
+* `Key`: 
+* `ServerID`: 
+* `Version`: 
+* `Binlog_format`: 
+* `LogBinEnabled`: 
+* `LogSlaveUpdatesEnabled`: 
+* `SelfBinlogCoordinates`: 
+* `MasterKey`: 
+* `Slave_SQL_Running`: 
+* `Slave_IO_Running`: 
+* `ReadBinlogCoordinates`: 
+* `ExecBinlogCoordinates`: 
+* `SecondsBehindMaster`: 
+* `SlaveLagSeconds`: 
+* `SlaveHosts`: 
+* `ClusterName`: 
+* `IsLastCheckValid`: 
+* `IsUpToDate`: 
+* `IsRecentlyChecked`: 
+* `SecondsSinceLastSeen`: 
+ 
 ## Security
 
 When operating in HTTP mode (API or Web), access to _orchestrator_ may be restricted via _basic authentication_.
