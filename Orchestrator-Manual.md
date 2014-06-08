@@ -85,7 +85,7 @@ Assuming you've installed _orchestrator_ under `/usr/local/orchestrator`:
 
     cd /usr/local/orchestrator && ./orchestrator http
 
-_Orchestrator_ will start listening on port `3000`. Point your browser to `http://your_host:3000/` 
+_Orchestrator_ will start listening on port `3000`. Point your browser to `http://your.host:3000/` 
 and you're ready to go. You may skip to next sections.
     
 If you like your debug messages, issue:
@@ -196,12 +196,39 @@ Make an infinite, continuous discovery and investigation of known instances. Typ
 ## Using the Web interface
 
 The following assumes you have [Executed as web/API service](#executing-as-webapi-service). 
-Open your browser and direct it at `http://yourhost:3000`. If all went well, you should see
+Open your browser and direct it at `http://your.host:3000`. If all went well, you should see
 the following welcome page:
 
 ![Orcehstrator screenshot](images/orchestrator-about.png)
 
+If this is your first time using _orchstrator_, then you should begin by teaching it. 
+_orchestrator_ needs to know what replication topologies you have. The web interface 
+provides this via the `discover` page.
+
+From each replication topology, pick one server (this could be master or slave) and let
+_orchestrator_ know which hostname & port this server listens on. _Orchestrator_ will
+recursively drill up and down replication to map the entire topology. This may take a couple 
+minutes, during which _orchestrator_ connects the servers it encounters into sub-topologies and
+eventually into the final topology.
+
+You may manually enter as many servers as you like (inside or outside the topology). 
+The first time _orchestrator_ investigates, it can only reach those slaves that are
+_currently replicating_. So if you know you have some slves which are temporarily down, you'll need
+to add them manually, or, if you like to see automation in work, just wait until they're up, at which
+time _orchestrator_ will automaticaly find them.
+
+One _orchestrator_ is familiar with a server, it doesn't care if the server is lagging, not replicating
+or inaccessible. The server is still part of the topology it was last seen in. There is a timeout for
+that: if a server is not seen by `UnseenInstanceForgetHours` hours, it is automaticaaly forgotten
+(presumed dead). Again, if it suddenly comes back to life, and connects to a known topology, it is 
+automatically re-discovered.
+
 ![Orcehstrator screenshot](images/orchestrator-discover.png)
+
+Once _orchestrator_ is familiar with a topology, you can view and manipulate it via the `cluster` page.
+Click the `clusters` drop down on navigation bar to see available clusters.
+
+Each topology is associated with a _cluster name_, which is (currently) named after the topology's master.
 
 ![Orcehstrator screenshot](images/orchestrator-simple.png)
 
