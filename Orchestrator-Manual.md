@@ -201,7 +201,7 @@ Make an infinite, continuous discovery and investigation of known instances. Typ
 
 ![Orcehstrator screenshot](images/orchestrator-instance-modal.png)
 
-![Orcehstrator screenshot](images/orchestrator-audit.png)
+![Orcehstrator screenshot](images/orchestrator-audit-small.png)
 
 ## Using the web API
 
