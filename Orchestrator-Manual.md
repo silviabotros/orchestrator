@@ -327,6 +327,70 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
 
 
+
+```json
+{
+
+    "Key": {
+        "Hostname": "127.0.0.1",
+        "Port": 22987
+    },
+    "ServerID": 1,
+    "Version": "5.5.32-log",
+    "Binlog_format": "STATEMENT",
+    "LogBinEnabled": true,
+    "LogSlaveUpdatesEnabled": true,
+    "SelfBinlogCoordinates": {
+        "LogFile": "mysql-bin.000030",
+        "LogPos": 10995
+    },
+    "MasterKey": {
+        "Hostname": "",
+        "Port": 0
+    },
+    "Slave_SQL_Running": false,
+    "Slave_IO_Running": false,
+    "ReadBinlogCoordinates": {
+        "LogFile": "",
+        "LogPos": 0
+    },
+    "ExecBinlogCoordinates": {
+        "LogFile": "",
+        "LogPos": 0
+    },
+    "SecondsBehindMaster": {
+        "Int64": 0,
+        "Valid": false
+    },
+    "SlaveLagSeconds": {
+        "Int64": 0,
+        "Valid": false
+    },
+    "SlaveHosts": [
+        {
+            "Hostname": "127.0.0.1",
+            "Port": 22988
+        },
+        {
+            "Hostname": "127.0.0.1",
+            "Port": 22989
+        },
+        {
+            "Hostname": "127.0.0.1",
+            "Port": 22990
+        }
+    ],
+    "ClusterName": "127.0.0.1:22987",
+    "IsLastCheckValid": true,
+    "IsUpToDate": true,
+    "IsRecentlyChecked": true,
+    "SecondsSinceLastSeen": {
+        "Int64": 54,
+        "Valid": true
+    }
+}
+```
+
 ## Security
 
 When operating in HTTP mode (API or Web), access to _orchestrator_ may be restricted via _basic authentication_.
