@@ -195,6 +195,14 @@ Make an infinite, continuous discovery and investigation of known instances. Typ
 
 ## Using the Web interface
 
+![Orcehstrator screenshot](images/orchestrator-discover.png)
+
+![Orcehstrator screenshot](images/orchestrator-simple.png)
+
+![Orcehstrator screenshot](images/orchestrator-instance-modal.png)
+
+![Orcehstrator screenshot](images/orchestrator-audit.png)
+
 ## Using the web API
 
 A keen web developer would notice (via Firebug or Developer Tools) how the web interface 
