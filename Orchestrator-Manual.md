@@ -282,7 +282,8 @@ _Problems_ drop down is available on all pages, and indicates all currently know
 
 ![Orcehstrator screenshot](images/orchestrator-problems.png)
 
-
+The `Audit` page presents with all actions taken via _orchestrator_: slave move, detection, maintenance etc.
+(`START SLAVE` and `STOP SLAVE` are currently not audited).
 
 ![Orcehstrator screenshot](images/orchestrator-audit-small.png)
 
