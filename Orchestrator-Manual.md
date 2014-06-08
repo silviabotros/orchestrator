@@ -116,7 +116,7 @@ Consider moving `conf/orchestrator.conf.json` to `/etc/orchestrator.conf.json` (
     
 To execute _orchestrator_ in command line mode or in HTTP API only, all you need is the `orchestrator` binary. 
 To enjoy the rich web interface, including topology visualizations and drag-and-drop topology changes, you will need 
-the `resources` directory and all that is underneath it.
+the `resources` directory and all that is underneath it. If you're unsure, don't touch; things are already in place.
 
 
 ## Execution
