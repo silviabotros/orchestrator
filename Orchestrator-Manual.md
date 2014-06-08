@@ -101,13 +101,15 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
 
 - Install from `RPM`
 
-  Installs onto `/usr/local/orchestrator`. Execute
+  Installs onto `/usr/local/orchestrator`. Execute:
+  
       sudo rpm -i orchestrator-1.0-1.x86_64.rpm
 
 
 - Install from `DEB`
 
-  Installs onto `/usr/local/orchestrator`. Execute
+  Installs onto `/usr/local/orchestrator`. Execute:
+  
       sudo dpkg -i orchestrator_1.0_amd64.deb
     
 To execute _orchestrator_ in command line mode or in HTTP API only, all you need is the `orchestrator` binary. 
