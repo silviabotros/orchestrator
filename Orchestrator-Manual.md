@@ -261,9 +261,15 @@ _Orchestrator_ will keep you safe by disallowing dropping your instance when eit
 target master have problems (lag too much, do not replicate etc.). It may allow the drop and still abort 
 the operation if it finds a deeper block, such as the target not having binary logs.
 
+Begin dragging: possible targets colored green
+
 ![Orcehstrator screenshot](images/orchestrator-simple-drag.png)
 
+Move over your target and drop:
+
 ![Orcehstrator screenshot](images/orchestrator-simple-drag-hover.png)
+
+Topology refactored:
 
 ![Orcehstrator screenshot](images/orchestrator-simple-dropped.png)
 
