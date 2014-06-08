@@ -327,10 +327,13 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
 
 
+#### Instance JSON breakdown
+
+Many API calls return _instance objects_, describing a single MySQL server. 
+This sample is followed by a field breakdown:
 
 ```json
 {
-
     "Key": {
         "Hostname": "127.0.0.1",
         "Port": 22988
