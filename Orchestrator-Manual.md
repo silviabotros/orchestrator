@@ -230,9 +230,16 @@ Click the `clusters` drop down on navigation bar to see available clusters.
 
 > Each topology is associated with a _cluster name_, which is (currently) named after the topology's master.
 
+The `cluster` page is where most fun happens. _Orchestrator_ presents the cluster in an easy to follow
+tree infographic, based on a D3 widget. Sub trees are collapsible.
 
+Each node in the tree presents a single MySQL instance, listing its fully qualified name, its version,
+binary log format and replication lag.
 
 ![Orcehstrator screenshot](images/orchestrator-simple.png)
+
+Note that each server has a _settings_ icon to the right. Clicking this icon opens a modal with some
+extra info on that server as well as operations to be performed.
 
 ![Orcehstrator screenshot](images/orchestrator-instance-modal.png)
 
