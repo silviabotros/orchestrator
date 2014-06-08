@@ -22,19 +22,19 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 
 #### TOC
 
-[About](#about)
-[License](#license)
-[Download](#download)
-[Requirements](#requirements)
-[Installation](#installation)
-[Execution](#execution)
-[Using the Web interface](#using-the-web-interface)
-[Using the web API](#using-the-web-api)
-[Security](#security)
-[Configuration](#configuration)
-[Risks](#risks)
-[Bugs](#bugs)
-[Contributions](#contributions)
+- [About](#about)
+- [License](#license)
+- [Download](#download)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Execution](#execution)
+- [Using the Web interface](#using-the-web-interface)
+- [Using the web API](#using-the-web-api)
+- [Security](#security)
+- [Configuration](#configuration)
+- [Risks](#risks)
+- [Bugs](#bugs)
+- [Contributions](#contributions)
 
 
 ## License
