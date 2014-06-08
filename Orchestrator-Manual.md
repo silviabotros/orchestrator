@@ -403,6 +403,7 @@ This sample is followed by a field breakdown:
 * `ReadBinlogCoordinates`: (when replicating) the coordinates being read from the master (what `IO_THREAD` polls)
 * `ExecBinlogCoordinates`: (when replicating) the master's coordinates that are being executed right now (what `SQL_THREAD` executed)
 * `SecondsBehindMaster`: direct mapping from `SHOW SLAVE STATUS`'s `Seconds_Behind_Master`
+    `Valid: false` indicates a `NULL`
 * `SlaveLagSeconds`: when `SlaveLagQuery` provided, the computed slave lag; otherwise same as `SecondsBehindMaster`
 * `SlaveHosts`: list of MySQL slaves *hostname & port)
 * `ClusterName`: name of cluster this instance is associated with; uniquely identifies cluster
