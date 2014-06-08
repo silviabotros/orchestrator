@@ -333,51 +333,47 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 
     "Key": {
         "Hostname": "127.0.0.1",
-        "Port": 22987
+        "Port": 22988
     },
-    "ServerID": 1,
+    "ServerID": 101,
     "Version": "5.5.32-log",
     "Binlog_format": "STATEMENT",
     "LogBinEnabled": true,
     "LogSlaveUpdatesEnabled": true,
     "SelfBinlogCoordinates": {
+        "LogFile": "mysql-bin.000016",
+        "LogPos": 10930
+    },
+    "MasterKey": {
+        "Hostname": "127.0.0.1",
+        "Port": 22987
+    },
+    "Slave_SQL_Running": true,
+    "Slave_IO_Running": true,
+    "ReadBinlogCoordinates": {
         "LogFile": "mysql-bin.000030",
         "LogPos": 10995
     },
-    "MasterKey": {
-        "Hostname": "",
-        "Port": 0
-    },
-    "Slave_SQL_Running": false,
-    "Slave_IO_Running": false,
-    "ReadBinlogCoordinates": {
-        "LogFile": "",
-        "LogPos": 0
-    },
     "ExecBinlogCoordinates": {
-        "LogFile": "",
-        "LogPos": 0
+        "LogFile": "mysql-bin.000030",
+        "LogPos": 10995
     },
     "SecondsBehindMaster": {
         "Int64": 0,
-        "Valid": false
+        "Valid": true
     },
     "SlaveLagSeconds": {
         "Int64": 0,
-        "Valid": false
+        "Valid": true
     },
     "SlaveHosts": [
         {
             "Hostname": "127.0.0.1",
-            "Port": 22988
+            "Port": 22990
         },
         {
             "Hostname": "127.0.0.1",
             "Port": 22989
-        },
-        {
-            "Hostname": "127.0.0.1",
-            "Port": 22990
         }
     ],
     "ClusterName": "127.0.0.1:22987",
@@ -385,7 +381,7 @@ The following is a brief listing of the web API exposed by _orchestrator_:
     "IsUpToDate": true,
     "IsRecentlyChecked": true,
     "SecondsSinceLastSeen": {
-        "Int64": 54,
+        "Int64": 8,
         "Valid": true
     }
 }
