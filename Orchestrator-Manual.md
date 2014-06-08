@@ -250,6 +250,24 @@ the instance (may be rediscovered a minute later if still connected to the topol
 
 ![Orcehstrator screenshot](images/orchestrator-instance-modal.png)
 
+The topology can be refactored: slaves can be moved around via _drag and drop_. Start dragging an instance:
+all possible _droppable_ targets are immediately colored green. You may turn your instance to be the slave of 
+all _droppable_ targets.
+
+Complex refactoring is done by performing multiple such steps. You may need to drag and drop your
+instance three or four times to put it in a "remote" location.
+
+_Orchestrator_ will keep you safe by disallowing dropping your instance when either your instance or its
+target master have problems (lag too much, do not replicate etc.). It may allow the drop and still abort 
+the operation if it finds a deeper block, such as the target not having binary logs.
+
+![Orcehstrator screenshot](images/orchestrator-simple-drag.png)
+
+![Orcehstrator screenshot](images/orchestrator-simple-drag-hover.png)
+
+![Orcehstrator screenshot](images/orchestrator-simple-dropped.png)
+
+
 ![Orcehstrator screenshot](images/orchestrator-audit-small.png)
 
 ## Using the web API
