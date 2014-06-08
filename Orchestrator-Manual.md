@@ -20,6 +20,22 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 
 ![Orcehstrator screenshot](images/orchestrator-simple.png)
 
+#### TOC
+
+[About](#about)
+[License](#license)
+[Download](#download)
+[Requirements](#requirements)
+[Installation](#installation)
+[Execution](#execution)
+[Using the Web interface](#using-the-web-interface)
+[Using the web API](#using-the-web-api)
+[Security](#security)
+[Configuration](#configuration)
+[Risks](#risks)
+[Bugs](#bugs)
+[Contributions](#contributions)
+
 
 ## License
 _Orchestrator_ is released as open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
