@@ -273,6 +273,12 @@ Topology refactored:
 
 ![Orcehstrator screenshot](images/orchestrator-simple-dropped.png)
 
+_Orchestrator_ visually indicates replication & accessibility related problems: slave lag, replication not working, 
+instance not accessed for long time, instance access failure, instance under maintenance.
+
+![Orcehstrator screenshot](images/orchestrator-simple-with-problems.png)
+
+
 
 ![Orcehstrator screenshot](images/orchestrator-audit-small.png)
 
