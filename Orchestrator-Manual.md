@@ -278,7 +278,7 @@ instance not accessed for long time, instance access failure, instance under mai
 
 ![Orcehstrator screenshot](images/orchestrator-simple-with-problems.png)
 
-_Problems_ drop down is available on all pages, and indicates all known issues:
+_Problems_ drop down is available on all pages, and indicates all currently known issues across all topologies:
 
 ![Orcehstrator screenshot](images/orchestrator-problems.png)
 
