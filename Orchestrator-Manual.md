@@ -244,6 +244,10 @@ binary log format and replication lag.
 Note that each server has a _settings_ icon to the right. Clicking this icon opens a modal with some
 extra info on that server as well as operations to be performed.
 
+The modal allows you to begin/terminate maintenance mode on an instance; perform an immediate refresh 
+(by default instances are polled once per minute - this is configurable); stop/start replication; forget 
+the instance (may be rediscovered a minute later if still connected to the topology). 
+
 ![Orcehstrator screenshot](images/orchestrator-instance-modal.png)
 
 ![Orcehstrator screenshot](images/orchestrator-audit-small.png)
