@@ -195,6 +195,12 @@ Make an infinite, continuous discovery and investigation of known instances. Typ
 
 ## Using the Web interface
 
+The following assumes you have [Executed as web/API service](#executing-as-webapi-service). 
+Open your browser and direct it at `http://yourhost:3000`. If all went well, you should see
+the following welcome page:
+
+![Orcehstrator screenshot](images/orchestrator-about.png)
+
 ![Orcehstrator screenshot](images/orchestrator-discover.png)
 
 ![Orcehstrator screenshot](images/orchestrator-simple.png)
