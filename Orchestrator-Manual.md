@@ -42,7 +42,8 @@ _Orchestrator_ is released as open source under the [Apache 2.0 license](http://
 
 
 ## Download
-_Orchestrator_ is released as open source and is available at [GitHub](https://github.com/outbrain/orchestrator). Find official releases in https://github.com/outbrain/orchestrator/releases
+_Orchestrator_ is released as open source and is available at [GitHub](https://github.com/outbrain/orchestrator). 
+Find official releases in https://github.com/outbrain/orchestrator/releases
 
  
 ## Requirements
@@ -89,12 +90,25 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
 
 #### Extract orchestrator binary and files
 
-Extract the archive you've downloaded from https://github.com/outbrain/orchestrator/releases
-For example, let's assume you wish to install _orchestrator_ under `/usr/local/orchestrator`:
+- Extract from tarball
 
-    sudo mkdir -p /usr/local/orchestrator
-    sudo cd /usr/local/orchestrator
-    sudo tar xzfv orchestrator-1.0.tar.gz
+  Extract the archive you've downloaded from https://github.com/outbrain/orchestrator/releases
+  For example, let's assume you wish to install _orchestrator_ under `/usr/local/orchestrator`:
+
+      sudo mkdir -p /usr/local/orchestrator
+      sudo cd /usr/local/orchestrator
+      sudo tar xzfv orchestrator-1.0.tar.gz
+
+- Install from `RPM`
+
+  Installs onto `/usr/local/orchestrator`. Execute
+      sudo rpm -i orchestrator-1.0-1.x86_64.rpm
+
+
+- Install from `DEB`
+
+  Installs onto `/usr/local/orchestrator`. Execute
+      sudo dpkg -i orchestrator_1.0_amd64.deb
     
 To execute _orchestrator_ in command line mode or in HTTP API only, all you need is the `orchestrator` binary. 
 To enjoy the rich web interface, including topology visualizations and drag-and-drop topology changes, you will need 
