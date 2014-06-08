@@ -223,6 +223,9 @@ time _orchestrator_ will automaticaly find them.
 > (presumed dead). Again, if it suddenly comes back to life, and connects to a known topology, it is 
 > automatically re-discovered.
 
+_Orchestrator_ resolves the `CNAME` of every input it gets, either from the user or from the replication
+topology itself. This is for avoiding ambiguities or implicit duplicates.
+
 ![Orcehstrator screenshot](images/orchestrator-discover.png)
 
 Once _orchestrator_ is familiar with a topology, you can view and manipulate it via the `cluster` page.
