@@ -95,8 +95,8 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
   Extract the archive you've downloaded from https://github.com/outbrain/orchestrator/releases
   For example, let's assume you wish to install _orchestrator_ under `/usr/local/orchestrator`:
 
-      sudo mkdir -p /usr/local/orchestrator
-      sudo cd /usr/local/orchestrator
+      sudo mkdir -p /usr/local
+      sudo cd /usr/local
       sudo tar xzfv orchestrator-1.0.tar.gz
 
 - Install from `RPM`
@@ -111,6 +111,8 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
   Installs onto `/usr/local/orchestrator`. Execute:
   
       sudo dpkg -i orchestrator_1.0_amd64.deb
+      
+Consider moving `conf/orchestrator.conf.json` to `/etc/orchestrator.conf.json` (both locations are valid)      
     
 To execute _orchestrator_ in command line mode or in HTTP API only, all you need is the `orchestrator` binary. 
 To enjoy the rich web interface, including topology visualizations and drag-and-drop topology changes, you will need 
