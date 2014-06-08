@@ -390,26 +390,26 @@ This sample is followed by a field breakdown:
 }
 ```
 
-* `Key`: 
-* `ServerID`: 
-* `Version`: 
-* `Binlog_format`: 
-* `LogBinEnabled`: 
-* `LogSlaveUpdatesEnabled`: 
-* `SelfBinlogCoordinates`: 
-* `MasterKey`: 
-* `Slave_SQL_Running`: 
-* `Slave_IO_Running`: 
-* `ReadBinlogCoordinates`: 
-* `ExecBinlogCoordinates`: 
-* `SecondsBehindMaster`: 
-* `SlaveLagSeconds`: 
-* `SlaveHosts`: 
-* `ClusterName`: 
-* `IsLastCheckValid`: 
-* `IsUpToDate`: 
-* `IsRecentlyChecked`: 
-* `SecondsSinceLastSeen`: 
+* `Key`: unique indicator for the instance: a combination of host & port
+* `ServerID`: the MySQL `server_id` param
+* `Version`: MySQL version
+* `Binlog_format`: the global `binlog_format` MySQL param
+* `LogBinEnabled`: whether binary logs are enabled 
+* `LogSlaveUpdatesEnabled`:  whether `log_slave_updates` MySQL param is enabled
+* `SelfBinlogCoordinates`: binary log file & position this instance write to (as in `SHOW MASTER STATUS`)
+* `MasterKey`: hostname & port of master, if any
+* `Slave_SQL_Running`: direct mapping from `SHOW SLAVE STATUS`'s `Slave_SQL_Running` 
+* `Slave_IO_Running`: direct mapping from `SHOW SLAVE STATUS`'s `Slave_IO_Running`
+* `ReadBinlogCoordinates`: (when replicating) the coordinates being read from the master (what `IO_THREAD` polls)
+* `ExecBinlogCoordinates`: (when replicating) the master's coordinates that are being executed right now (what `SQL_THREAD` executed)
+* `SecondsBehindMaster`: direct mapping from `SHOW SLAVE STATUS`'s `Seconds_Behind_Master`
+* `SlaveLagSeconds`: when `SlaveLagQuery` provided, the computed slave lag; otherwise same as `SecondsBehindMaster`
+* `SlaveHosts`: list of MySQL slaves *hostname & port)
+* `ClusterName`: name of cluster this instance is associated with; uniquely identifies cluster
+* `IsLastCheckValid`: whether last attempt at reading this instane succeeeded
+* `IsUpToDate`: whether this data is up to date
+* `IsRecentlyChecked`: whether a read attempt on this instance has been recently made
+* `SecondsSinceLastSeen`: time elapsed since last successfully accessed this instance
  
 ## Security
 
