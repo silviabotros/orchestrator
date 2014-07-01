@@ -134,6 +134,10 @@ and you're ready to go. You may skip to next sections.
 If you like your debug messages, issue:
 
     cd /usr/local/orchestrator && ./orchestrator --debug http
+    
+or, even more detailed in case of error:
+    
+    cd /usr/local/orchestrator && ./orchestrator --debug --stack http
 
 The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
 Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file. 
