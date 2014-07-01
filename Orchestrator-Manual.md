@@ -32,6 +32,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Using the web API](#using-the-web-api)
 - [Security](#security)
 - [Configuration](#configuration)
+- [Supported topologies](#supported-topologies)
 - [Risks](#risks)
 - [Bugs](#bugs)
 - [Contributions](#contributions)
@@ -502,6 +503,33 @@ The following is a complete list of configuration parameters:
 * `AuditPageSize`       (int), Number of entries in an audit page
 * `HTTPAuthUser`        (string), Username for HTTP Basic authentication (blank disables authentication)
 * `HTTPAuthPassword`    (string), Password for HTTP Basic authentication
+
+
+## Supported topologies
+
+_Orchestrator_ supports "standard" MySQL replication. The standard replication is the type of replication present in 
+MySQL up to and including version **5.5**. The following are *not* supported:
+* GTID
+* Parallel replication
+* Multi-master replication (as in MariaDB **10.0**)
+* Tungsten replication
+
+Master-master (ring) replication is supported for two master nodes. At this stage the is a visualization limitation
+which still presents such topology as a tree (though clearly indicates who the co-masters are). 
+Topologies of three master nodes or more in a ring are unsupported.
+
+Galera/XtraDB Cluster replication is not strictly supported: _orchestrator_ will not recognize that co-masters
+in a Galera topology are related. Each such master would appear to _orchestrator_ to be the head of its own distinct 
+topology.
+
+Replication topologies with multiple MySQL instances on the same host are supported. For example, the testing
+environment for _orchestrator_ is composed of four instances all running on the same machine, courtesy MySQLSandbox.
+However, MySQL's lack of information sharing between slaves and masters make it impossible for _orchestrator_ to
+analyze the topology top-to-bottom, since a master does not know which ports its slaves are listening on.
+The default assumption is that slaves are listening on same port as their master. With multiple instances on a single
+machine (and on same network) this is impossible. In such case you must configure your MySQL instances' 
+`report_host` and `report_port` ([read more](http://code.openark.org/blog/mysql/the-importance-of-report_host-report_port)) 
+parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to **true**.   
 
 
 ## Risks
