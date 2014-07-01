@@ -179,8 +179,10 @@ and down the slaves chain (if any) to detect the entire topology:
 Do the same, and be more verbose:
 
     orchestrator -c discover -i 127.0.0.1:22987 --debug cli
+    orchestrator -c discover -i 127.0.0.1:22987 --debug --stack cli
 
-> `--debug` can be useful in all operations.
+> `--debug` can be useful in all operations. `--stack` prints code stack trace on (most) errors and is useful
+> for development & testing purposed or for submitting bug reports.
 
 Forget an instance (an instance may be manually or automatically re-discovered via `discover` command above):
 
