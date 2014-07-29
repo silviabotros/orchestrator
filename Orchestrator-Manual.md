@@ -243,6 +243,9 @@ Make an infinite, continuous discovery and investigation of known instances. Typ
 
     orchestrator -c continuous --debug cli
 
+Just check if an instance can be connected: attempt to resolve hostname and make a TCP connection to host & port:
+
+    orchestrator -c resolve -i myhost.mydomain:3306
 
 ## Using the Web interface
 
@@ -377,6 +380,7 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/problems`: list instances who have known problems (e.g. not replicating, lagging etc.) 
 * `/api/audit`: show most recent audit entries
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
+* `/api/resolve/:host/:port`: check is hostname resolves and whether TCP connection can be established (example: `/api/resolve/myhost.mydomain/3306`)  
 
 
 #### Instance JSON breakdown
@@ -514,9 +518,7 @@ MySQL up to and including version **5.5**. The following are *not* supported:
 * Multi-master replication (as in MariaDB **10.0**)
 * Tungsten replication
 
-Master-master (ring) replication is supported for two master nodes. At this stage the is a visualization limitation
-which still presents such topology as a tree (though clearly indicates who the co-masters are). 
-Topologies of three master nodes or more in a ring are unsupported.
+Master-master (ring) replication is supported for two master nodes. Topologies of three master nodes or more in a ring are unsupported.
 
 Galera/XtraDB Cluster replication is not strictly supported: _orchestrator_ will not recognize that co-masters
 in a Galera topology are related. Each such master would appear to _orchestrator_ to be the head of its own distinct 

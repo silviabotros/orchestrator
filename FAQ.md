@@ -28,8 +28,7 @@ Yes. And _orchestrator_ is in fact ignorant about it.
 
 ### Does orchestrator support Master-Master (ring) Replication?
 
-Yes, for a ring of two masters (active-active, active-passive). Do note that the tree visualization cannot present the circular replication, 
-and will pick an arbitrary master as the root of the tree.
+Yes, for a ring of two masters (active-active, active-passive). 
 
 Master-Master-Master[-Master...] topologies, where the ring is composed of 3 or more masters are not supported and not tested. 
 And are discouraged. And are an abomination.
