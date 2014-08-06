@@ -240,7 +240,7 @@ Detach a slave from its master, effectively breaking down the replication (destr
 >
 > `move-up`, `move-below`, `make-co-master` and `detach-slave` are the building blocks of topology refactoring. 
 > With the first two actions one can make any change to the topology, with the exception of moving the master.
-> The last two allow replacing a master by promoting one its slaves to be a co-master (MySQL master-master
+> The last two allow replacing a master by promoting one of its slaves to be a co-master (MySQL master-master
 > replication), then detaching the newly promoted co-master from the original master, effectively making it the
 > master of all topology. 
 
@@ -331,6 +331,8 @@ The topology can be refactored: slaves can be moved around via _drag and drop_. 
 all possible _droppable_ targets are immediately colored green. You may turn your instance to be the slave of 
 all _droppable_ targets.
 
+Master-master topologies can be created by dragging a _master_ onto one of its slaves, making both co-masters.
+
 Complex refactoring is done by performing multiple such steps. You may need to drag and drop your
 instance three or four times to put it in a "remote" location.
 
@@ -383,9 +385,12 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/refresh/:host/:port`: synchronously re-read instance status 
 * `/api/forget/:host/:port`: remove records of this instance. It may be automatically rediscovered by 
   following up on its master or one of its slaves. 
-* `/api/move-up/:host/:port` (attempt to) move this instacne up the topology (make it child of its grandparent)
+* `/api/move-up/:host/:port` (attempt to) move this instance up the topology (make it child of its grandparent)
 * `/api/move-below/:host/:port/:siblingHost/:siblingPort` (attempt to) move an instance below its sibling.
   the two provided instances must be siblings: slaves of the same master. (example `/api/move-below/mysql10/3306/mysql24/3306`)
+* `/api/make-co-master/:host/:port` (attempt to) make this instance co-master with its own master, creating a
+  circular master-master topology.
+* `/api/detach-slave/:host/:port` (attempt to) detach a slave from its master, breaking replication (destructive operation)
 * `/api/begin-maintenance/:host/:port/:owner/:reason`: declares and begins maintenance mode for an instance.
   While in maintenance mode, _orchestrator_ will not allow moving this instance. 
   (example `/api/begin-maintenance/mysql10/3306/gromit/upgrading+mysql+version`)
