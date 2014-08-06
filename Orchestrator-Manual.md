@@ -166,8 +166,9 @@ Show currently known clusters (replication topologies):
 
     orchestrator -c clusters cli
     
-The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
-Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file. 
+> The above looks for configuration in `/etc/orchestrator.conf.json`, `conf/orchestrator.conf.json`, `orchestrator.conf.json`, in that order.
+> Classic is to put configuration in `/etc/orchestrator.conf.json`. Since it contains credentials to your MySQL servers you may wish to limit access to that file.
+ 
 You may choose to use a different location for the configuration file, in which case execute:
 
     orchestrator -c clusters --config=/path/to/config.file cli
@@ -208,7 +209,7 @@ Move a slave up the topology (make it sbling of its master, or direct slave of i
 
     orchestrator -c move-up -i 127.0.0.1:22988 cli
 
-The above command will only succeed if the instance _has_ a grandparent, and does not have _problems_ such as slave lag etc.
+> The above command will only succeed if the instance _has_ a grandparent, and does not have _problems_ such as slave lag etc.
 
 Move a slave below its sibling:
 
@@ -216,12 +217,33 @@ Move a slave below its sibling:
 
 > `-s` stands for `sibling`.
 
-The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` are siblings (slaves of same master), none of them has _problems_ (e.g. slave lag),
-and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
+> The above command will only succeed if `127.0.0.1:22988` and `127.0.0.1:22990` are siblings (slaves of same master), none of them has _problems_ (e.g. slave lag),
+> and the sibling _can_ be master of instance (i.e. has binary logs, has `log_slave_updates`, no version collision etc.)
+        
+Promote a slave to be co-master with its master, making for a circular Master-Master topology:
 
-> `move-up` and `move-below` are the two building blocks of topology refactoring. With these two actions one
-> can make any change to the topology, with the exception of moving the master. These two actions are also
-> as atomic as possible, by only affecting two replication servers per action (`move-up` affects 
+    orchestrator -c make-co-master -i 127.0.0.1:22988 cli
+    
+> The above command will only succeed if `127.0.0.1:22988`'s master is root of topology (is not itself a slave)
+> and is not associated in another co-master ring.
+
+Detach a slave from its master, effectively breaking down the replication (destructive action):
+
+    orchestrator -c detach-slave -i 127.0.0.1:22988 cli
+    
+> Although the above is destructive in temrs of replication chain, the only action taken is to modify
+> the slave's `MASTER_PORT` to `65,535`. Otherwise it still retains the master's hostname and binary log
+> positions. Assuming it is relatively easy to recall the original master's port, it is easy to recover
+> from this destructive action.
+
+**A note on topology refactoring commands**
+> `move-up`, `move-below`, `make-co-master` and `detach-slave` are the building blocks of topology refactoring. 
+> With the first two actions one can make any change to the topology, with the exception of moving the master.
+> The last two allow replacing a master by promoting one its slaves to be a co-master (MySQL master-master
+> replication), then detaching the newly promoted co-master from the original master, effectively making it the
+> master of all topology. 
+
+> These actions are also as atomic as possible, by only affecting two replication servers per action (e.g. `move-up` affects 
 > the instance and its master; `move-below` affect the instance and its sibling). 
 
 > _Orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
