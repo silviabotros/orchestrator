@@ -236,7 +236,8 @@ Detach a slave from its master, effectively breaking down the replication (destr
 > positions. Assuming it is relatively easy to recall the original master's port, it is easy to recover
 > from this destructive action.
 
-> **A note on topology refactoring commands**
+> *A note on topology refactoring commands*
+>
 > `move-up`, `move-below`, `make-co-master` and `detach-slave` are the building blocks of topology refactoring. 
 > With the first two actions one can make any change to the topology, with the exception of moving the master.
 > The last two allow replacing a master by promoting one its slaves to be a co-master (MySQL master-master
