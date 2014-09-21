@@ -33,6 +33,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Security](#security)
 - [Configuration](#configuration)
 - [Supported topologies](#supported-topologies)
+- [Agents](#agents)
 - [Risks](#risks)
 - [Bugs](#bugs)
 - [Contributions](#contributions)
@@ -384,7 +385,8 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/discover/:host/:port`: discover given instance and all the topology it is associated with (example `/api/discover/mysql10/3306`)
 * `/api/refresh/:host/:port`: synchronously re-read instance status 
 * `/api/forget/:host/:port`: remove records of this instance. It may be automatically rediscovered by 
-  following up on its master or one of its slaves. 
+  following up on its master or one of its slaves.
+* `/api/resolve/:host/:port`: check if hostname resolves and whether TCP connection can be established (example: `/api/resolve/myhost.mydomain/3306`)  
 * `/api/move-up/:host/:port` (attempt to) move this instance up the topology (make it child of its grandparent)
 * `/api/move-below/:host/:port/:siblingHost/:siblingPort` (attempt to) move an instance below its sibling.
   the two provided instances must be siblings: slaves of the same master. (example `/api/move-below/mysql10/3306/mysql24/3306`)
@@ -397,18 +399,21 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/end-maintenance/:host/:port`: end maintenance on instance
 * `/api/end-maintenance/:maintenanceKey` end maintenance on instance, based on maintenance key given on `begin-maintenance` 
 * `/api/start-slave/:host/:port`: issue a `START SLAVE` on an instance 
-* `/api/stop-slave/:host/:port`: issue a `STOP SLAVE` on an instance 
+* `/api/stop-slave/:host/:port`: issue a `STOP SLAVE` on an instance
+* `/api/kill-query/:host/:port/:process`: kill a query (denoted by process id) on given instance. Synchronous call. 
 * `/api/maintenance`: list instances in active maintenance mode
 * `/api/cluster/:clusterName`: list instances in a topology cluster. Each topology is automatically given a unique 
   name. At this point the name is set by the topology's master (and if there's a master-master setup, then one of the masters).
   For example, a topology's name might be `mysql10:3306`, based on the understanding the server `mysql10` on port `3306`
   is the master of the topology.  
 * `/api/clusters`: list names of known topologies. 
+* `/api/clusters-info`: list known clusters (topologies) and basic info
 * `/api/search/:searchString`: list instances matching search string
 * `/api/problems`: list instances who have known problems (e.g. not replicating, lagging etc.) 
+* `/api/long-queries`: list of long running queries on all topologies (queries running for over 60 seconds, excluding replication and event-scheduler queries)
+* `/api/long-queries/:filter`: list of long running queries on all topologies, filtered by text match
 * `/api/audit`: show most recent audit entries
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
-* `/api/resolve/:host/:port`: check is hostname resolves and whether TCP connection can be established (example: `/api/resolve/myhost.mydomain/3306`)  
 
 
 #### Instance JSON breakdown
@@ -424,6 +429,7 @@ This sample is followed by a field breakdown:
     },
     "ServerID": 101,
     "Version": "5.5.32-log",
+    "ReadOnly": false,
     "Binlog_format": "STATEMENT",
     "LogBinEnabled": true,
     "LogSlaveUpdatesEnabled": true,
@@ -470,13 +476,15 @@ This sample is followed by a field breakdown:
     "SecondsSinceLastSeen": {
         "Int64": 8,
         "Valid": true
-    }
+    },
+    "CountMySQLSnapshots": 0
 }
 ```
 
 * `Key`: unique indicator for the instance: a combination of host & port
 * `ServerID`: the MySQL `server_id` param
 * `Version`: MySQL version
+* `ReadOnly`: the global `read_only` boolean value
 * `Binlog_format`: the global `binlog_format` MySQL param
 * `LogBinEnabled`: whether binary logs are enabled 
 * `LogSlaveUpdatesEnabled`:  whether `log_slave_updates` MySQL param is enabled
@@ -495,27 +503,59 @@ This sample is followed by a field breakdown:
 * `IsUpToDate`: whether this data is up to date
 * `IsRecentlyChecked`: whether a read attempt on this instance has been recently made
 * `SecondsSinceLastSeen`: time elapsed since last successfully accessed this instance
+* `CountMySQLSnapshots`: number of known snapshots (data provided by `orchestrator-agent`)
  
  
 ## Security
 
-When operating in HTTP mode (API or Web), access to _orchestrator_ may be restricted via _basic authentication_.
-Add the following to _orchestrator_'s configuration file:
+When operating in HTTP mode (API or Web), access to _orchestrator_ may be restricted via either:
 
-    "HTTPAuthUser":     "dba_team",
-    "HTTPAuthPassword": "time_for_dinner"
+*  _basic authentication_
 
-At this stage there is no LDAP integration, nor per-user credentials. Just this one single credential.
-Authentication is likely to be enhanced in the future.
+   Add the following to _orchestrator_'s configuration file:
 
-_Orchestrator_'s configuration file contains credentials to your MySQL servers as well as _basic authentication_
-credentials as specified above. Keep it safe (e.g. `chmod 600`). 
+        "AuthenticationMethod": "basic",
+        "HTTPAuthUser":         "dba_team",
+        "HTTPAuthPassword":     "time_for_dinner"
 
+   With `basic` authentication there's just one single credential, and no roles.
+
+   _Orchestrator_'s configuration file contains credentials to your MySQL servers as well as _basic authentication_
+   credentials as specified above. Keep it safe (e.g. `chmod 600`).
+
+*  _Headers authentication_
+   
+   Authenticates via headers forwarded by reverse proxy (e.g. Apache2 relaying requests to orchestrator).
+   Requires:
+   
+        "AuthenticationMethod": "proxy",
+        "AuthUserHeader": "X-Forwarded-User",
+   
+   You will need to configure your reverse proxy to send the naem of authenticated user via HTTP header, and
+   use same header name as configured by `AuthUserHeader`.
+   
+   For example, an Apache2 setup may look like the following:
+   
+        RequestHeader unset X-Forwarded-User
+        RewriteEngine On
+        RewriteCond %{LA-U:REMOTE_USER} (.+)
+        RewriteRule .* - [E=RU:%1,NS]
+        RequestHeader set X-Forwarded-User %{RU}e
+   
+   The `proxy` authentication allows for *roles*. Soem users are *Power users* and the rest are just normal users.
+   *Power users* are allowed to make changes to the topologies, whereas normal users are in read-only mode.
+   To specify the list of known DBAs, use:
+
+        "PowerAuthUsers": [
+            "wallace", "gromit", "shaun"
+            ],
+   
 
 ## Configuration
 
 The following is a complete list of configuration parameters:
 
+* `ListenAddress`           (string), host & port to listen on (default `":3000"`). You can limit connections to local machine via `"127.0.0.1:3000"`
 * `MySQLTopologyUser`       (string), credentials for replication topology servers (masters & slaves)          
 * `MySQLTopologyPassword`   (string), credentials for replication topology servers (masters & slaves)
 * `MySQLOrchestratorHost`   (string), hostname for backend MySQL server
@@ -533,8 +573,18 @@ The following is a complete list of configuration parameters:
 * `ReasonableReplicationLagSeconds` (int), Above this value is considered a problem
 * `ReasonableMaintenanceReplicationLagSeconds` (int), Above this value move-up and move-below are blocked
 * `AuditPageSize`       (int), Number of entries in an audit page
+* `AuthenticationMethod`    (string), type of authentication. Either empty (no authentication, default), `"basic"` or `"proxy"`. See **Security** section.
+* `AuthUserHeader`          (string), name of HTTP header which contains authenticated user when `AuthenticationMethod` is `"proxy"`
+* `PowerAuthUsers`          (string list), users considered as *power users* (allowed to manipulate the topology); applies on `"proxy"` `AuthenticationMethod`. 
 * `HTTPAuthUser`        (string), Username for HTTP Basic authentication (blank disables authentication)
 * `HTTPAuthPassword`    (string), Password for HTTP Basic authentication
+* `ClusterNameToAlias`  (string-to-string map), Map between regex matching cluster name to a human friendly alias
+* `ServeAgentsHttp`     (bool), should *orchestrator* accept agent registrations and serve agent-related requests (see [Agents](#agents))
+* `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
+* `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten 
+* `StaleSeedFailMinutes`     (uint), time after which a seed with no state update is considered to be failed
+
+See [sample config file](https://github.com/outbrain/orchestrator/blob/master/conf/orchestrator.conf.json) in master branch.
 
 
 ## Supported topologies
@@ -561,6 +611,36 @@ machine (and on same network) this is impossible. In such case you must configur
 `report_host` and `report_port` ([read more](http://code.openark.org/blog/mysql/the-importance-of-report_host-report_port)) 
 parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to **true**.   
 
+
+## Agents
+
+You may optionally install [orchestrator-agent](https://github.com/outbrain/orchestrator-agent) on your MySQL hosts.
+*orchestrator-agent* is a service which registers with your *orchestrator* server and accepts requests by *orchestrator*
+via web API.
+
+Supported requests relate to general, OS and LVM operations, such as:
+- Stopping/starting MySQL service on host
+- Getting MySQL OS info such as data directory, port, disk space usage
+- Performing various LVM operations such as finding LVM snapshots, mounting/unmounting a snapshot
+- Transferring data between hosts (e.g. via `netcat`)
+
+`orchestrator-agent` is developed at [Outbrain](https://github.com/outbrain) for Outbrain's specific requirements, and is
+less of a general solution. As such, it supports those operations required by Outbrain's architecture. For example, we
+rely on LVM snapshots for backups; we use a directory service to register available snapshots; we are DC-aware and prefer
+local backups over remote backups.
+
+Nevertheless at the very least `orchestrator-agent` should appeal to most. It is configurable to some extent (directory
+service command is configurable - write your own bash code; data transfer command is configurable - replace `netcat` with 
+your own prefered method, etc.).
+
+The information and API exposed by *orchestrator-agent* to *orchestrator* allow *orchestrator* to coordinate and operate
+seeding of new or corrupted machines by getting data from freshly available snapshots. Moreover, it allows *orchestrator*
+to automatically suggest the source of data for a given MySQL machine, by looking up such hosts that actually have a 
+recent snapshot available, preferably in the same datacenter.
+  
+For security measures, an agent requires a token to operate all but the simplest requests. This token is randomly generated
+by the agent and negotiated with *orchestrator*. *Orchestrator* does not expose the agent's token (right now some work
+needs to be done on obscurring the token on error messages).
 
 ## Risks
 
