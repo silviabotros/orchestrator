@@ -8,7 +8,9 @@ _Orchestrator_ is a MySQL replication topology management and visualization tool
 * Replication problems visualization
 * Topology changes via intuitive drag & drop
 * Maintenance mode declaration and enforcement
+* Reviewing and killing long running queries
 * Auditing of operations
+* When working with [orchestrator-agent](https://github.com/outbrain/orchestrator-agent), seed new/corrupt instances
 * More...
 
 Refactoring the topology is a matter of a simple drag & drop. _Orchestrator_ will keep you safe by disallowing invalid replication topologies 
@@ -35,6 +37,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Supported topologies](#supported-topologies)
 - [Agents](#agents)
 - [Risks](#risks)
+- [Gotchas](#gotchas)
 - [Bugs](#bugs)
 - [Contributions](#contributions)
 
@@ -367,6 +370,8 @@ The `Audit` page presents with all actions taken via _orchestrator_: slave move,
 
 ![Orcehstrator screenshot](images/orchestrator-audit-small.png)
 
+`Queries` -> `Long queries` page list last met long running queries over the entire topology. these would be
+queries running over `60` seconds, non-replication, non-event-scheduler.
 
 ## Using the web API
 
@@ -573,7 +578,7 @@ The following is a complete list of configuration parameters:
 * `ReasonableReplicationLagSeconds` (int), Above this value is considered a problem
 * `ReasonableMaintenanceReplicationLagSeconds` (int), Above this value move-up and move-below are blocked
 * `AuditPageSize`       (int), Number of entries in an audit page
-* `AuthenticationMethod`    (string), type of authentication. Either empty (no authentication, default), `"basic"` or `"proxy"`. See **Security** section.
+* `AuthenticationMethod`    (string), type of authentication. Either empty (no authentication, default), `"basic"` or `"proxy"`. See [Security](#security) section.
 * `AuthUserHeader`          (string), name of HTTP header which contains authenticated user when `AuthenticationMethod` is `"proxy"`
 * `PowerAuthUsers`          (string list), users considered as *power users* (allowed to manipulate the topology); applies on `"proxy"` `AuthenticationMethod`. 
 * `HTTPAuthUser`        (string), Username for HTTP Basic authentication (blank disables authentication)
@@ -665,6 +670,17 @@ Now that you're a bit more scared, it's time to reflect: how much did your hands
 We suspect the automation provided by _orchestrator_ makes for a _safer_ management mechanism than we get with our shaking hands.
 
 Also, read the [LICENSE](https://github.com/outbrain/orchestrator/blob/master/LICENSE), and especially the "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND" part.
+ 
+
+## Gotchas
+
+* By default, _orchestrator_ only polls a server once a minute (configurable via `InstancePollSeconds`). This means that any
+status you see is essentially an estimation. Different instances get polled at different times. The status you see on the
+_cluster_ page, for example, does not necessarily reflect a given point in time, but rather a combination of different points
+in time in the last minute (or whatever poll interval you use).
+
+  If you want to make sure, use the "Refresh" button on an instance _settings dialog_.
+    
  
 
 ## Bugs
