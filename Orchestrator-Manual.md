@@ -356,6 +356,10 @@ Topology refactored:
 
 ![Orcehstrator screenshot](images/orchestrator-simple-dropped.png)
 
+Dragging a master over its slave makes for a co-masters (master-master) topology:
+
+![Orcehstrator screenshot](images/orchestator-cm-simple-drag-master.png)
+
 _Orchestrator_ visually indicates replication & accessibility related problems: slave lag, replication not working, 
 instance not accessed for long time, instance access failure, instance under maintenance.
 
