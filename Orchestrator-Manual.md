@@ -535,10 +535,10 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
    Authenticates via headers forwarded by reverse proxy (e.g. Apache2 relaying requests to orchestrator).
    Requires:
    
-        ```json
-        "AuthenticationMethod": "proxy",
-        "AuthUserHeader": "X-Forwarded-User",
-        ```
+    ```json
+    "AuthenticationMethod": "proxy",
+    "AuthUserHeader": "X-Forwarded-User",
+    ```
    
    You will need to configure your reverse proxy to send the naem of authenticated user via HTTP header, and
    use same header name as configured by `AuthUserHeader`.
