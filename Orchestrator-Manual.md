@@ -360,6 +360,10 @@ Dragging a master over its slave makes for a co-masters (master-master) topology
 
 ![Orcehstrator screenshot](images/orchestator-cm-simple-drag-master.png)
 
+A co-master topology:
+
+![Orcehstrator screenshot](images/orchestator-cm-co-masters.png)
+
 _Orchestrator_ visually indicates replication & accessibility related problems: slave lag, replication not working, 
 instance not accessed for long time, instance access failure, instance under maintenance.
 
