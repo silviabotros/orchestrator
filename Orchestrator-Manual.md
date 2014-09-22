@@ -680,7 +680,13 @@ _cluster_ page, for example, does not necessarily reflect a given point in time,
 in time in the last minute (or whatever poll interval you use).
 
   If you want to make sure, use the "Refresh" button on an instance _settings dialog_.
-    
+  
+* Similarly, on **Long Queries** page the queries presented are true to a point in time in the last minute (or otherwise the
+`InstancePollSeconds` settgins). Thus, it is possible that by the time you look at this page, the queries listed will have been
+completed. If you choose to click the **Kill query** button, please be advised that you might actually be killing a *different*
+query, executing on same connection following up on the by-now-completed listed long running query.
+
+      
  
 
 ## Bugs
