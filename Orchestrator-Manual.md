@@ -679,7 +679,11 @@ status you see is essentially an estimation. Different instances get polled at d
 _cluster_ page, for example, does not necessarily reflect a given point in time, but rather a combination of different points
 in time in the last minute (or whatever poll interval you use).
 
-  If you want to make sure, use the "Refresh" button on an instance _settings dialog_.
+  The `problems` drop down to the right is also executed asynchonously. You may therefore see the same instance in two
+  places (once in the `cluster` page, once in the `problems` drop down) in two different states.
+
+  If you want to get the most up to date instance status, use the "Refresh" button on the instance's _settings dialog_.  
+  
 
 * Similarly, on `Long Queries` page the queries presented are true to a point in time in the last minute (or otherwise the
 `InstancePollSeconds` settgins). Thus, it is possible that by the time you look at this page, the queries listed will have been
