@@ -591,7 +591,8 @@ The following is a complete list of configuration parameters:
 * `PowerAuthUsers`          (string list), users considered as *power users* (allowed to manipulate the topology); applies on `"proxy"` `AuthenticationMethod`. 
 * `HTTPAuthUser`        (string), Username for HTTP Basic authentication (blank disables authentication)
 * `HTTPAuthPassword`    (string), Password for HTTP Basic authentication
-* `ClusterNameToAlias`  (string-to-string map), Map between regex matching cluster name to a human friendly alias
+* `ClusterNameToAlias`  (string-to-string map), Map between regex matching cluster name to a human friendly alias. 
+  The human friendly alias is then presented on the `Clusters` menu and in the `Clusters Dashboard` page.
 * `ServeAgentsHttp`     (bool), should *orchestrator* accept agent registrations and serve agent-related requests (see [Agents](#agents))
 * `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
 * `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten 
@@ -705,6 +706,10 @@ independently, and and insight on the topology must propagate from master to sla
 This may happen because instances used to identify themselves as belonging to a certain topology that is now being destroyed.
 This is self-healing. Refresh and look at the `Clusters` menu to review the newly created cluster (names after the new master)
 over time.
+
+* Don't restart _orchestrator_ while you're running a seed (only applies to workingwith _orchestrator-agent_)
+
+  Otherwise _orchestrator_ is non-intrusive and self-healing. You can restart it whenever you like.
 
 ## Bugs
 
