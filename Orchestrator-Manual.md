@@ -680,14 +680,20 @@ _cluster_ page, for example, does not necessarily reflect a given point in time,
 in time in the last minute (or whatever poll interval you use).
 
   If you want to make sure, use the "Refresh" button on an instance _settings dialog_.
-  
+
 * Similarly, on **Long Queries** page the queries presented are true to a point in time in the last minute (or otherwise the
 `InstancePollSeconds` settgins). Thus, it is possible that by the time you look at this page, the queries listed will have been
-completed. If you choose to click the **Kill query** button, please be advised that you might actually be killing a *different*
+completed. If you choose to click the `Kill query` button, please be advised that you might actually be killing a *different*
 query, executing on same connection following up on the by-now-completed listed long running query.
+  
+* It make take a couple minutes for _orchestrator_ to full detect a cluster's topology. The time depends on the depth
+of the topology (if you have slaves-of-slaves the time increases). This is due to the fact _orchestrator_ polls the instances
+independently, and and insight on the topology must propagate from master to slave on the next polling occasion.
 
-      
- 
+* Specifically, if you fail over to a new master, you may find that for a couple minutes the topologies seem empty.
+This may happen because instances used to identify themselves as belonging to a certain topology that is now being destroyed.
+This is self-healing. Refresh and look at the **Clusters** menu to review the newly created cluster (names after the new master)
+over time.
 
 ## Bugs
 
