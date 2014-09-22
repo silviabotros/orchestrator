@@ -614,7 +614,7 @@ analyze the topology top-to-bottom, since a master does not know which ports its
 The default assumption is that slaves are listening on same port as their master. With multiple instances on a single
 machine (and on same network) this is impossible. In such case you must configure your MySQL instances' 
 `report_host` and `report_port` ([read more](http://code.openark.org/blog/mysql/the-importance-of-report_host-report_port)) 
-parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to **true**.   
+parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to `true`.   
 
 
 ## Agents
@@ -681,7 +681,7 @@ in time in the last minute (or whatever poll interval you use).
 
   If you want to make sure, use the "Refresh" button on an instance _settings dialog_.
 
-* Similarly, on **Long Queries** page the queries presented are true to a point in time in the last minute (or otherwise the
+* Similarly, on `Long Queries` page the queries presented are true to a point in time in the last minute (or otherwise the
 `InstancePollSeconds` settgins). Thus, it is possible that by the time you look at this page, the queries listed will have been
 completed. If you choose to click the `Kill query` button, please be advised that you might actually be killing a *different*
 query, executing on same connection following up on the by-now-completed listed long running query.
@@ -692,7 +692,7 @@ independently, and and insight on the topology must propagate from master to sla
 
 * Specifically, if you fail over to a new master, you may find that for a couple minutes the topologies seem empty.
 This may happen because instances used to identify themselves as belonging to a certain topology that is now being destroyed.
-This is self-healing. Refresh and look at the **Clusters** menu to review the newly created cluster (names after the new master)
+This is self-healing. Refresh and look at the `Clusters` menu to review the newly created cluster (names after the new master)
 over time.
 
 ## Bugs
