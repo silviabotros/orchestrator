@@ -683,7 +683,6 @@ in time in the last minute (or whatever poll interval you use).
   places (once in the `cluster` page, once in the `problems` drop down) in two different states.
 
   If you want to get the most up to date instance status, use the "Refresh" button on the instance's _settings dialog_.  
-  
 
 * Similarly, on `Long Queries` page the queries presented are true to a point in time in the last minute (or otherwise the
 `InstancePollSeconds` settgins). Thus, it is possible that by the time you look at this page, the queries listed will have been
