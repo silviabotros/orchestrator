@@ -519,11 +519,9 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
 
    Add the following to _orchestrator_'s configuration file:
 
-        ```json
         "AuthenticationMethod": "basic",
         "HTTPAuthUser":         "dba_team",
         "HTTPAuthPassword":     "time_for_dinner"
-        ```
 
    With `basic` authentication there's just one single credential, and no roles.
 
@@ -535,10 +533,8 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
    Authenticates via headers forwarded by reverse proxy (e.g. Apache2 relaying requests to orchestrator).
    Requires:
    
-    ```json
-    "AuthenticationMethod": "proxy",
-    "AuthUserHeader": "X-Forwarded-User",
-    ```
+        "AuthenticationMethod": "proxy",
+        "AuthUserHeader": "X-Forwarded-User",
    
    You will need to configure your reverse proxy to send the naem of authenticated user via HTTP header, and
    use same header name as configured by `AuthUserHeader`.
@@ -555,11 +551,10 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
    *Power users* are allowed to make changes to the topologies, whereas normal users are in read-only mode.
    To specify the list of known DBAs, use:
 
-        ```json
         "PowerAuthUsers": [
             "wallace", "gromit", "shaun"
             ],
-        ```   
+   
 
 ## Configuration
 
