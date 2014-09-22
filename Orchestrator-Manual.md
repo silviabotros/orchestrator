@@ -661,7 +661,7 @@ Actual risk begins when you modify instances. Namely moving slaves around the to
 
 All the above is tested, and have been put to practice in our production topologies. We have not witnessed a miscalculation or misprotection throughout our production use.
 
-When _orchestrator_ encounters an error throught the moving process, it does its best to rollback. However extreme cases such as a new master crashing in the middle of the move
+When _orchestrator_ encounters an error throughout the moving process, it does its best to rollback. However extreme cases such as a new master crashing in the middle of the move
 may leave the topology unstable (though the same instance could crash before the move and leave whatever topology it was in charge of unstable just as well). 
 Or someone manually tampering with replication even while _orchestrator_ is moving the slave around. Point being - weird
 and evil stuff can happen, and there is a risk in a slave losing its position vs. its master.
