@@ -596,6 +596,9 @@ The following is a complete list of configuration parameters:
 * `ClusterNameToAlias`  (string-to-string map), Map between regex matching cluster name to a human friendly alias. 
   The human friendly alias is then presented on the `Clusters` menu and in the `Clusters Dashboard` page.
 * `ServeAgentsHttp`     (bool), should *orchestrator* accept agent registrations and serve agent-related requests (see [Agents](#agents))
+* `AgentsUseSSL`        (bool), if `true`, agents service runs HTTPS and also connects to agents via HTTPS
+* `SSLPrivateKeyFile`   (string), SSL private key file used for agents service. Aonly applies on `ServeAgentsHttp` = `true' and `AgentsUseSSL` = 'true` 
+* `SSLCertFile`         (string), SSL certification file used for agents service. Aonly applies on `ServeAgentsHttp` = `true' and `AgentsUseSSL` = 'true` 
 * `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
 * `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten 
 * `StaleSeedFailMinutes`     (uint), time after which a seed with no state update is considered to be failed
