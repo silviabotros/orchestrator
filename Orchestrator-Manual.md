@@ -231,22 +231,16 @@ Promote a slave to be co-master with its master, making for a circular Master-Ma
 > The above command will only succeed if `127.0.0.1:22988`'s master is root of topology (is not itself a slave)
 > and is not associated in another co-master ring.
 
-Detach a slave from its master, effectively breaking down the replication (destructive action):
+Reset a slave, effectively breaking down the replication (destructive action):
 
-    orchestrator -c detach-slave -i 127.0.0.1:22988 cli
-    
-> Although the above is destructive in temrs of replication chain, the only action taken is to modify
-> the slave's `MASTER_PORT` to `65,535`. Otherwise it still retains the master's hostname and binary log
-> positions. Assuming it is relatively easy to recall the original master's port, it is easy to recover
-> from this destructive action.
+    orchestrator -c reset-slave -i 127.0.0.1:22988 cli
 
 > *A note on topology refactoring commands*
 >
-> `move-up`, `move-below`, `make-co-master` and `detach-slave` are the building blocks of topology refactoring. 
+> `move-up`, `move-below`, `make-co-master` and `reset-slave` are the building blocks of topology refactoring. 
 > With the first two actions one can make any change to the topology, with the exception of moving the master.
 > The last two allow replacing a master by promoting one of its slaves to be a co-master (MySQL master-master
-> replication), then detaching the newly promoted co-master from the original master, effectively making it the
-> master of all topology. 
+> replication), then resetting the newly promoted co-master, effectively making it the master of all topology. 
 
 > These actions are also as atomic as possible, by only affecting two replication servers per action (e.g. `move-up` affects 
 > the instance and its master; `move-below` affect the instance and its sibling). 
@@ -405,7 +399,7 @@ The following is a brief listing of the web API exposed by _orchestrator_:
   the two provided instances must be siblings: slaves of the same master. (example `/api/move-below/mysql10/3306/mysql24/3306`)
 * `/api/make-co-master/:host/:port` (attempt to) make this instance co-master with its own master, creating a
   circular master-master topology.
-* `/api/detach-slave/:host/:port` (attempt to) detach a slave from its master, breaking replication (destructive operation)
+* `/api/reset-slave/:host/:port` reset a slave, breaking replication (destructive operation)
 * `/api/begin-maintenance/:host/:port/:owner/:reason`: declares and begins maintenance mode for an instance.
   While in maintenance mode, _orchestrator_ will not allow moving this instance. 
   (example `/api/begin-maintenance/mysql10/3306/gromit/upgrading+mysql+version`)
@@ -429,6 +423,10 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/long-queries/:filter`: list of long running queries on all topologies, filtered by text match
 * `/api/audit`: show most recent audit entries
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
+
+Incompatible change:
+
+* Removed `/api/detach-slave/:host/:port` due to unsafe behavior
 
 
 #### Instance JSON breakdown
@@ -597,6 +595,7 @@ The following is a complete list of configuration parameters:
   The human friendly alias is then presented on the `Clusters` menu and in the `Clusters Dashboard` page.
 * `ServeAgentsHttp`     (bool), should *orchestrator* accept agent registrations and serve agent-related requests (see [Agents](#agents))
 * `AgentsUseSSL`        (bool), if `true`, agents service runs HTTPS and also connects to agents via HTTPS
+* `SSLSkipVerify`       (bool), if `true`, SSL certification verification is skipped/ignored
 * `SSLPrivateKeyFile`   (string), SSL private key file used for agents service. Aonly applies on `ServeAgentsHttp` = `true` and `AgentsUseSSL` = `true` 
 * `SSLCertFile`         (string), SSL certification file used for agents service. Aonly applies on `ServeAgentsHttp` = `true` and `AgentsUseSSL` = `true` 
 * `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
