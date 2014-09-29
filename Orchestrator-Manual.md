@@ -250,6 +250,11 @@ Reset a slave, effectively breaking down the replication (destructive action):
 > total operation time to become prohibitively high without the DBA having a chance to get involved.
 > Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
 > We also observed that it takes little extra time to initiate such multiple steps. 
+
+Make an instance read-only or writeable:
+
+    orchestrator -c set-read-only -i 127.0.0.1:22988 cli
+    orchestrator -c set-writeable -i 127.0.0.1:22988 cli
         
 Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow this instance to
 be moved or participate in another instance's move:
