@@ -603,6 +603,7 @@ The following is a complete list of configuration parameters:
 * `SSLSkipVerify`       (bool), if `true`, SSL certification verification is skipped/ignored
 * `SSLPrivateKeyFile`   (string), SSL private key file used for agents service. Aonly applies on `ServeAgentsHttp` = `true` and `AgentsUseSSL` = `true` 
 * `SSLCertFile`         (string), SSL certification file used for agents service. Aonly applies on `ServeAgentsHttp` = `true` and `AgentsUseSSL` = `true` 
+* `HttpTimeoutSeconds`  (int),    HTTP GET request timeout (when connecting to _orchestrator-agent_)
 * `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
 * `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten 
 * `StaleSeedFailMinutes`     (uint), time after which a seed with no state update is considered to be failed
