@@ -690,7 +690,9 @@ set global event_scheduler := 1;
 and the matching configuration entry:
 
 ```json
+{
     "PseudoGTIDPattern": "CREATE OR REPLACE .*? VIEW `pseudo_gtid_view` AS select"
+}
 ```    
     
 _orchestrator_ will only enable Pseudo-GTID mode if the `PseudoGTIDPattern` configuration variable is non-empty,
