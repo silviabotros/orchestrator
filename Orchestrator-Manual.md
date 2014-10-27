@@ -412,6 +412,7 @@ The following is a brief listing of the web API exposed by _orchestrator_:
 * `/api/end-maintenance/:maintenanceKey` end maintenance on instance, based on maintenance key given on `begin-maintenance` 
 * `/api/start-slave/:host/:port`: issue a `START SLAVE` on an instance 
 * `/api/stop-slave/:host/:port`: issue a `STOP SLAVE` on an instance
+* `/api/stop-slave-nice/:host/:port`: stop a slave such that the SQL thread is aligned with IO thread
 * `/api/set-read-only/:host/:port`: issue a `SET GLOBAL read_only := 1` on an instance
 * `/api/set-writeable/:host/:port`: issue a `SET GLOBAL read_only := 0` on an instance
 * `/api/kill-query/:host/:port/:process`: kill a query (denoted by process id) on given instance. Synchronous call. 
