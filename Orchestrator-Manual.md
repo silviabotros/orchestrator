@@ -4,6 +4,7 @@ _Orchestrator_ is a MySQL replication topology management and visualization tool
 
 * Detection and interrogation of replication clusters
 * Safe topology refactoring: moving slaves around the topology
+* Fail over and rematching of slaves even as master or local masters are inaccessible (via Pseudo GTID)
 * Sleek topology visualization
 * Replication problems visualization
 * Topology changes via intuitive drag & drop
@@ -35,6 +36,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Security](#security)
 - [Configuration](#configuration)
 - [Supported topologies](#supported-topologies)
+- [Pseudo GTID](#pseudo-gtid)
 - [Agents](#agents)
 - [Risks](#risks)
 - [Gotchas](#gotchas)
@@ -608,6 +610,7 @@ The following is a complete list of configuration parameters:
 * `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
 * `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten 
 * `StaleSeedFailMinutes`     (uint), time after which a seed with no state update is considered to be failed
+* `PseudoGTIDPattern`   (string), regular expression pattern which matches Pseudo GTID entried in the binary logs, and nothing but those entries
 
 See [sample config file](https://github.com/outbrain/orchestrator/blob/master/conf/orchestrator.conf.json) in master branch.
 
@@ -636,6 +639,79 @@ machine (and on same network) this is impossible. In such case you must configur
 `report_host` and `report_port` ([read more](http://code.openark.org/blog/mysql/the-importance-of-report_host-report_port)) 
 parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to `true`.   
 
+## Pseudo GTID
+
+Pseudo GTID is the method of injecting unique entries into the binary logs, such that they can be used to
+match/sync slaves without direct connection, or slaves whose master is corrupted/dead. 
+
+_Orchestrator_ leverages Pseudo GTID, when applicable, and allows for complex re-matching of slaves, including
+semi-automated fail over onto a slave and the moving of its siblings as its slaves.
+
+To enable Pseudo GTID you need to:
+1. Frequently inject a unique entry into the binary logs
+2. Configure orchestrator to recognize such an entry
+
+Injecting an entry in the binary log is a matter of issuing a statement. Depending on whether you're using 
+statement based replication or row based replication, such a statement could be an `ISNERT`, `CREATE` or other.
+Please consult these blog entries: 
+[Pseudo GTID](http://code.openark.org/blog/mysql/pseudo-gtid), 
+[Pseudo GTID, Row Based Replication](http://code.openark.org/blog/mysql/pseudo-gtid-row-based-replication), 
+[Refactoring replication topology with Pseudo GTID](http://code.openark.org/blog/mysql/refactoring-replication-topology-with-pseudo-gtid)
+for more detail.
+
+An example of a workable injection of GTID and an _orchestrator_ configuration would be:
+
+```sql
+create database if not exists meta;
+
+drop event if exists meta.create_pseudo_gtid_view_event;
+
+delimiter ;;
+create event if not exists
+  meta.create_pseudo_gtid_view_event
+  on schedule every 10 second starts current_timestamp
+  on completion preserve
+  enable
+  do
+    begin
+      set @pseudo_gtid := uuid();
+      set @_create_statement := concat('create or replace view meta.pseudo_gtid_view as select \'', @pseudo_gtid, '\' as pseudo_gtid_unique_val from dual');
+      PREPARE st FROM @_create_statement;
+      EXECUTE st;
+      DEALLOCATE PREPARE st;
+    end
+;;
+
+delimiter ;
+
+set global event_scheduler := 1;
+```
+
+and the matching configuration entry:
+
+    "PseudoGTIDPattern": "CREATE OR REPLACE .*? VIEW `pseudo_gtid_view` AS select"
+    
+_orchestrator_ will only enable Pseudo-GTID mode if the `PseudoGTIDPattern` configuration variable is non-empty,
+but can only validate its correctness during runtime.
+
+If your pattern is incorrect (thus, _orchestrator_ in unable to find pattern in the binary logs), you will not be able
+to move slaves in the topology via Pseudo-GTID, and you will only find this out upon attempting to.
+
+If you manage more that one topology with _orchestrator_, you will need to use same Pseudo GTID injection for all, as
+there is only a single `PseudoGTIDPattern` value. 
+
+To move slaves via Pseudo-GTID mechanism, click the **Safe mode** green button on the navigation bar and turn it into
+**Pseudo GTID mode**. The rules for dragging a slave change: any slave whose SQL thread is up-to-date with the IO-thread
+(depicted by a win-glass icon) is eligible for dragging. At this point such a slave can be dropped on an accessible sibling
+or ancestor (including its very own master/parent).   
+
+![Orcehstrator screenshot](images/orchestrator-pseudo-gtid-dead-relay-master.png)
+
+![Orcehstrator screenshot](images/orchestrator-pseudo-gtid-dead-relay-master-begin-drag.png)
+
+![Orcehstrator screenshot](images/orchestrator-pseudo-gtid-dead-relay-master-drop.png)
+
+![Orcehstrator screenshot](images/orchestrator-pseudo-gtid-dead-relay-master-refactored-1.png)
 
 ## Agents
 
