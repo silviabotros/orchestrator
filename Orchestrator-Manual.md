@@ -259,7 +259,7 @@ Reset a slave, effectively breaking down the replication (destructive action):
 > However _orchestrator_ also supports topology refactoring in situations where servers are inaccessible,
 > via Pseudo GTID technology. It may allow promoting a slave up the topology even as its master is dead, or
 > matching and synching the slaves of a failed master even though they all stopped replicating in different
-> positions. In such case a more relaxed method of movingthe slave is provided, called "_mathcing_".
+> positions. In such case a more relaxed method of movingthe slave is provided, called "_matching_".
  
 Match a slave below another instance (we expect the other instance to be as advanced or more advanced than the moved slave)
 
