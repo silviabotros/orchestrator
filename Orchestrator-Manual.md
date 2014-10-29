@@ -239,7 +239,7 @@ Reset a slave, effectively breaking down the replication (destructive action):
 
 > *A note on topology refactoring commands*
 >
-> `move-up`, `move-below`, `make-co-master` and `reset-slave` are the building blocks of topology refactoring. 
+> `move-up`, `move-below`, `make-co-master` and `reset-slave` are the building blocks of _simple_ topology refactoring. 
 > With the first two actions one can make any change to the topology, with the exception of moving the master.
 > The last two allow replacing a master by promoting one of its slaves to be a co-master (MySQL master-master
 > replication), then resetting the newly promoted co-master, effectively making it the master of all topology. 
@@ -247,11 +247,27 @@ Reset a slave, effectively breaking down the replication (destructive action):
 > These actions are also as atomic as possible, by only affecting two replication servers per action (e.g. `move-up` affects 
 > the instance and its master; `move-below` affect the instance and its sibling). 
 
-> _Orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
+> The word _simple_ relates to the method of using an up-and-alive topology, where all connections are good and 
+> instances can be queried for their replication status. 
+
+> In such a case _orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
 > since this would require affecting multiple servers, increasing the chance for something to go wrong or for the
 > total operation time to become prohibitively high without the DBA having a chance to get involved.
 > Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
 > We also observed that it takes little extra time to initiate such multiple steps. 
+
+> However _orchestrator_ also supports topology refactoring in situations where servers are inaccessible,
+> via Pseudo GTID technology. It may allow promoting a slave up the topology even as its master is dead, or
+> matching and synching the slaves of a failed master even though they all stopped replicating in different
+> positions. In such case a more relaxed method of movingthe slave is provided, called "_mathcing_".
+ 
+Match a slave below another instance (we expect the other instance to be as advanced or more advanced than the moved slave)
+
+    orchestrator -c match-below -i 127.0.0.1:22988 -s 127.0.0.1:22990 --debug cli
+
+> The above required Pseudo GTID to be present and configured. It may take more time to execute as it needs to 
+> look up entires in the servers binary log.
+> See [Pseudo GTID](#pseudo-gtid) for more details.
 
 Make an instance read-only or writeable:
 
