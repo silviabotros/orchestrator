@@ -87,8 +87,10 @@ _Orchestrator_ uses a configuration file, located in either `/etc/orchestrator.c
 For _orchestrator_ to detect your replication topologies, it must also have an account on each and every topology. At this stage this has to be the 
 same account (same user, same password) for all topologies. On each of your masters, issue the following:
 
-    GRANT SUPER, PROCESS ON *.* TO 'orchestrator'@'orch_host' IDENTIFIED BY 'orch_topology_password';
+    GRANT SUPER, PROCESS, REPLICATION SLAVE ON *.* TO 'orchestrator'@'orch_host' IDENTIFIED BY 'orch_topology_password';
 
+> REPLICATION SLAVE is required if you intend to use [Pseudo GTID](#pseudo-gtid)
+ 
 Replace `orch_host` with hostname or orchestrator machine (or do your wildcards thing). Choose your password wisely. Edit `orchestrator.conf.json` to match:
 
     "MySQLTopologyUser": "orchestrator",
@@ -239,7 +241,7 @@ Reset a slave, effectively breaking down the replication (destructive action):
 
 > *A note on topology refactoring commands*
 >
-> `move-up`, `move-below`, `make-co-master` and `reset-slave` are the building blocks of _simple_ topology refactoring. 
+> `move-up`, `move-below`, `make-co-master` and `reset-slave` are the building blocks of _classic_ topology refactoring. 
 > With the first two actions one can make any change to the topology, with the exception of moving the master.
 > The last two allow replacing a master by promoting one of its slaves to be a co-master (MySQL master-master
 > replication), then resetting the newly promoted co-master, effectively making it the master of all topology. 
@@ -247,7 +249,7 @@ Reset a slave, effectively breaking down the replication (destructive action):
 > These actions are also as atomic as possible, by only affecting two replication servers per action (e.g. `move-up` affects 
 > the instance and its master; `move-below` affect the instance and its sibling). 
 
-> The word _simple_ relates to the method of using an up-and-alive topology, where all connections are good and 
+> The word _classic_ relates to the method of using an up-and-alive topology, where all connections are good and 
 > instances can be queried for their replication status. 
 
 > In such a case _orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position) 
@@ -720,7 +722,7 @@ to move slaves in the topology via Pseudo-GTID, and you will only find this out 
 If you manage more that one topology with _orchestrator_, you will need to use same Pseudo GTID injection for all, as
 there is only a single `PseudoGTIDPattern` value. 
 
-To move slaves via Pseudo-GTID mechanism, click the **Safe mode** green button on the navigation bar and turn it into
+To move slaves via Pseudo-GTID mechanism, click the **Classic mode** green button on the navigation bar and turn it into
 **Pseudo GTID mode**. The rules for dragging a slave change: any slave whose SQL thread is up-to-date with the IO-thread
 (depicted by a win-glass icon) is eligible for dragging. At this point such a slave can be dropped on an accessible sibling
 or ancestor (including its very own master/parent).   
