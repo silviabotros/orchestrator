@@ -562,6 +562,18 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
    _Orchestrator_'s configuration file contains credentials to your MySQL servers as well as _basic authentication_
    credentials as specified above. Keep it safe (e.g. `chmod 600`).
 
+*  _basic authentication, extended_
+
+   Add the following to _orchestrator_'s configuration file:
+
+        "AuthenticationMethod": "multi",
+        "HTTPAuthUser":         "dba_team",
+        "HTTPAuthPassword":     "time_for_dinner"
+
+   The `multi` authentication works like `basic`, but also accepts the user `readonly` with any password. The `readonly` user
+   is allowed to view all content but unable to perform write operations through the API (such as stopping a slave,
+   repointing slaves, discovering new instances etc.)
+   
 *  _Headers authentication_
    
    Authenticates via headers forwarded by reverse proxy (e.g. Apache2 relaying requests to orchestrator).
@@ -589,6 +601,13 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
             "wallace", "gromit", "shaun"
             ],
    
+Or, regardless, you may turn the entire _orchestrator_ process to be read only via:
+
+   
+        "ReadOnly": "true",
+
+You may combine `ReadOnly` with any authentication method you like. 
+   
 
 ## Configuration
 
@@ -609,10 +628,13 @@ The following is a complete list of configuration parameters:
 * `InstancePollSeconds`         (uint), Number of seconds between instance reads
 * `UnseenInstanceForgetHours`   (uint), Number of hours after which an unseen instance is forgotten
 * `DiscoveryPollSeconds`        (int), Auto/continuous discovery of instances sleep time between polls
+* `HostnameResolveMethod`		(string), Type of hostname resolve method (either `"none"` or `"cname"`)
+* `ExpiryHostnameResolvesMinutes`	(int), Number of minute after which a hostname resolve expires (hostname resolve are cached for up to this number of minutes)
 * `ReasonableReplicationLagSeconds` (int), Above this value is considered a problem
 * `ReasonableMaintenanceReplicationLagSeconds` (int), Above this value move-up and move-below are blocked
 * `AuditPageSize`       (int), Number of entries in an audit page
-* `AuthenticationMethod`    (string), type of authentication. Either empty (no authentication, default), `"basic"` or `"proxy"`. See [Security](#security) section.
+* `ReadOnly`				(bool) When `"true"`, no write operations (e.g. stopping a slave, repointing slaves, discovering) are allowed
+* `AuthenticationMethod`    (string), type of authentication. Either empty (no authentication, default), `"basic"`, `"multi"` or `"proxy"`. See [Security](#security) section.
 * `AuthUserHeader`          (string), name of HTTP header which contains authenticated user when `AuthenticationMethod` is `"proxy"`
 * `PowerAuthUsers`          (string list), users considered as *power users* (allowed to manipulate the topology); applies on `"proxy"` `AuthenticationMethod`. 
 * `HTTPAuthUser`        (string), Username for HTTP Basic authentication (blank disables authentication)
