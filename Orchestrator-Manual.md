@@ -279,7 +279,7 @@ Make an instance read-only or writeable:
 Begin maintenance mode on an instance. While in maintenance mode, _orchestrator_ will not allow this instance to
 be moved or participate in another instance's move:
 
-    orchestrator -c begin-maintenance -i 127.0.0.1:22988 cli
+    orchestrator -c begin-maintenance -i 127.0.0.1:22988 --reason="load testing; do not disturb" cli
 
 End maintenance mode on an instance:
 
@@ -632,16 +632,20 @@ Cheatsheet:
 
 			Orchestrator will *not* resolve CNAMEs and VIPs for given instance.
 
-		begin-maintenance
+    begin-maintenance
 			Request a maintenance lock on an instance. Topology changes require placing locks on the minimal set of
 			affected instances, so as to avoid an incident of two uncoordinated operations on a smae instance (leading
 			to possible chaos). Locks are placed in the backend database, and so multiple orchestrator instances are safe.
 			Operations automatically acquire locks and release them. This command manually acquires a lock, and will
 			block other operations on the instance until lock is released.
-			Note that orchestrator automatically assumed locks to be expired after MaintenanceExpireMinutes (in config).
-			Example:
+			Note that orchestrator automatically assumes locks to be expired after MaintenanceExpireMinutes (in config).
+			Examples:
+
+			orchestrator -c begin-maintenance -i instance.to.lock.com --duration=3h --reason="load testing; do not disturb"
+				accepted duration format: 10s, 30m, 24h, 3d, 4w
 
 			orchestrator -c begin-maintenance -i instance.to.lock.com
+				--duration not given; default to config's MaintenanceExpireMinutes
 
 		end-maintenance
 			Remove maintenance lock; such lock may have been gained by an explicit begin-maintenance command implicitly
