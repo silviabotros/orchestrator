@@ -63,6 +63,30 @@ though any other unix-like OS should do just fine.
 The following assumes you will be using the same machine for both the _orchestrator_ binary and the MySQL backend.
 If not, replace `127.0.0.1` with appropriate host name. Replace `orch_backend_password` with your own super secret password.
 
+#### Extract orchestrator binary and files
+
+- Extract from tarball
+
+  Extract the archive you've downloaded from https://github.com/outbrain/orchestrator/releases
+  For example, let's assume you wish to install _orchestrator_ under `/usr/local/orchestrator`:
+
+      sudo mkdir -p /usr/local
+      sudo cd /usr/local
+      sudo tar xzfv orchestrator-1.0.tar.gz
+
+- Install from `RPM`
+
+  Installs onto `/usr/local/orchestrator`. Execute:
+
+      sudo rpm -i orchestrator-1.0-1.x86_64.rpm
+
+
+- Install from `DEB`
+
+  Installs onto `/usr/local/orchestrator`. Execute:
+
+      sudo dpkg -i orchestrator_1.0_amd64.deb
+
 
 #### Setup backend MySQL server
 
@@ -96,30 +120,6 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
     "MySQLTopologyUser": "orchestrator",
     "MySQLTopologyPassword": "orch_topology_password",
 
-
-#### Extract orchestrator binary and files
-
-- Extract from tarball
-
-  Extract the archive you've downloaded from https://github.com/outbrain/orchestrator/releases
-  For example, let's assume you wish to install _orchestrator_ under `/usr/local/orchestrator`:
-
-      sudo mkdir -p /usr/local
-      sudo cd /usr/local
-      sudo tar xzfv orchestrator-1.0.tar.gz
-
-- Install from `RPM`
-
-  Installs onto `/usr/local/orchestrator`. Execute:
-
-      sudo rpm -i orchestrator-1.0-1.x86_64.rpm
-
-
-- Install from `DEB`
-
-  Installs onto `/usr/local/orchestrator`. Execute:
-
-      sudo dpkg -i orchestrator_1.0_amd64.deb
 
 Consider moving `conf/orchestrator.conf.json` to `/etc/orchestrator.conf.json` (both locations are valid)
 
