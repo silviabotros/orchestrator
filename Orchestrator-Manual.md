@@ -1140,7 +1140,7 @@ You may combine `ReadOnly` with any authentication method you like.
 
 ## Configuration
 
-The following is a complete list of configuration parameters:
+The following is a complete list of configuration parameters. "Complete" is always behind the latest code; you may also want to look at [config.go](https://github.com/outbrain/orchestrator/blob/master/src/github.com/outbrain/orchestrator/config/config.go)
 
 * `Debug`                   (bool), set debug mode (similar to --debug option)
 * `ListenAddress`           (string), host & port to listen on (default `":3000"`). You can limit connections to local machine via `"127.0.0.1:3000"`
