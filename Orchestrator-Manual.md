@@ -32,6 +32,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Execution](#execution)
+- [Executing via command line](#executing-via-command-line)
 - [Using the Web interface](#using-the-web-interface)
 - [Using the web API](#using-the-web-api)
 - [Security](#security)
@@ -164,7 +165,7 @@ You typically want this behavior, but you may disable it, making _orchestrator_ 
 The above is useful for development and testing purposes. You probably wish to keep to the defaults.
 
 
-#### Executing as command line
+#### Executing via command line
 
 Following is a synopsis of command line samples. For simplicitly, we assume `orchestrator` is in your path.
 If not, replace `orchestrator` with `/path/to/orchestrator`.
