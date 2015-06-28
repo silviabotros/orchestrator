@@ -43,10 +43,14 @@ then _orchestrator_ sees these as three different topologies.
 Not at this stage. This is mainly because the developers of _orchestrator_ feel GTID is not yet complete, 
 and are anyhow not using a MySQL version which supports GTID. It is likely that GTID will be supported in the future.
 
-### Does orchestrator support Parallel Replication?
+### Does orchestrator support 5.6 Parallel Replication (thread per schema)?
 
 No. This is because `START SLAVE UNTIL` is not supported in parallel replication, and output of `SHOW SLAVE STATUS` is incomplete. 
 There is no expected work on this.
+
+### Does orchestrator support 5.7 Parallel Replication?
+
+Yes, when in-order-replication is enabled (see [slave_preserve_commit_order](http://dev.mysql.com/doc/refman/5.7/en/replication-options-slave.html#sysvar_slave_preserve_commit_order)). The same applies to MariaDB.
 
 ### Does orchestrator support Multi-Master Replication?
 
@@ -70,4 +74,4 @@ Yes. _Orchestrator_ is released as open source under the Apache 2.0 license and 
 
 ### Who develops orchestrator and why?
 
-_Orchestrator_ is developed by Shlomi Noach at Outbrain to assist in managing multiple large replication topologies; time and human errors saved so far are almost priceless.
+_Orchestrator_ is developed by Shlomi Noach at Booking.com (previously at Outbrain) to assist in managing multiple large replication topologies; time and human errors saved so far are almost priceless.
