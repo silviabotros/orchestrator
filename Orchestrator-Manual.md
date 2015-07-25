@@ -43,6 +43,7 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Agents](#agents)
 - [Risks](#risks)
 - [Gotchas](#gotchas)
+- [Supported topologies and versions](#supported-topologies-and-versions)
 - [Bugs](#bugs)
 - [Contributions](#contributions)
 
@@ -1980,6 +1981,32 @@ over time.
 * Don't restart _orchestrator_ while you're running a seed (only applies to workingwith _orchestrator-agent_)
 
   Otherwise _orchestrator_ is non-intrusive and self-healing. You can restart it whenever you like.
+
+
+## Supported Topologies and Versions
+
+The following setups are supported by _orchestrator_:
+
+- Plain-old MySQL replication; the _classic_ one, based on log file + position
+- Statement based replication (SBR)
+- Row based replication (RBR)
+- Semi-sync replication
+- Master-Master (two node in circle) replication
+- MariaDB GTID (with limitations on crash recoveries)
+- 5.7 Parallel replication, when in-order-replication is enabled (see [slave_preserve_commit_order](http://dev.mysql.com/doc/refman/5.7/en/replication-options-slave.html#sysvar_slave_preserve_commit_order)).
+
+The following setups are _unsupported_:
+
+- Master-master...-master (circular) replication with 3 or more nodes in ring.
+- 5.6 Parallel (thread per schema) replication
+- Multi master replication (one slave replicating from multiple masters)
+- Tungsten replicator
+- Oracle GTID (>= 5.6). Work on its way.
+
+The following setups are partially supported:
+
+- Galera; _orchestrator_ does not recognize Galera masters as having relationships; it will recognize each as its own standalone master.
+
 
 ## Bugs
 
