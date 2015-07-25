@@ -1200,6 +1200,7 @@ The following is a complete list of configuration parameters. "Complete" is alwa
 * `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten
 * `StaleSeedFailMinutes`     (uint), time after which a seed with no state update is considered to be failed
 * `PseudoGTIDPattern`   (string), Pattern to look for in binary logs that makes for a unique entry (pseudo GTID). When empty, Pseudo-GTID based refactoring is disabled.
+* `PseudoGTIDMonotonicHint` (string), Optional, subtring in Pseudo-GTID entry which indicates Pseudo-GTID entries are expected to be monotonically increasing
 * `DetectPseudoGTIDQuery` (string), Optional query which is used to authoritatively decide whether pseudo gtid is enabled on instance
 * `BinlogEventsChunkSize` (int), Chunk size (X) for `SHOW BINLOG|RELAYLOG EVENTS LIMIT ?,X` statements. Smaller means less locking and more work to be done. Recommendation: keep `10000` or below, due to locking issues.
 * `BufferBinlogEvents`  (bool), Should we used buffered read on `SHOW BINLOG|RELAYLOG EVENTS` -- releases the database lock sooner (recommended).
@@ -1309,6 +1310,12 @@ It is best if you can also query for Pseudo-GTID existence via SQL. For this, co
   "DetectPseudoGTIDQuery": "select count(*) as pseudo_gtid_exists from meta.pseudo_gtid_status where anchor = 1 and time_generated > now() - interval 2 day",
 ```
 
+While you're at it, make your Pseudo-GTID entries monotonicly increasing, and provide a hint such as (modify value):
+
+```
+   "PseudoGTIDMonotonicHint": "asc:",
+```
+
 #### Topology recovery: want to have if you want to own your database
 
 When PseudoGTID is enabled, _orchestrator_ can do automated recovery from dead intermediate master (reconnects orphaned slaves to the topology)
@@ -1381,8 +1388,10 @@ _Orchestrator_ leverages Pseudo GTID, when applicable, and allows for complex re
 semi-automated fail over onto a slave and the moving of its siblings as its slaves.
 
 To enable Pseudo GTID you need to:
+
 1. Frequently inject a unique entry into the binary logs
 2. Configure orchestrator to recognize such an entry
+3. Optionaly hint to orchestrator that such entries are in ascending order
 
 Injecting an entry in the binary log is a matter of issuing a statement. Depending on whether you're using
 statement based replication or row based replication, such a statement could be an `ISNERT`, `CREATE` or other.
@@ -1558,7 +1567,7 @@ delimiter ;
 set global event_scheduler := 1;
 ```
 
-   and the matching configuration entry:
+   and the matching configuration entries:
 
 ```json
 {
@@ -1573,6 +1582,104 @@ In the above routine you may notice significant code overhead (`DECLATE CONTINUE
 safety mechanism to avoid pileup of the `INSERT` statement in case the server happens to suffer some locking issue. Recall that the event scheduler
 issues the code repeatedly, and even if the previous execution has not been terminated. This protection layer will support injection of Pseudo-GTID
 on every execution, but will only allow one `INSERT` statement at a time. This comes from experience, trust it.
+
+
+
+
+#### Ascending Pseudo GTID via DROP VIEW IF EXISTS & INSERT INTO ... ON DUPLICATE KEY UPDATE
+
+Similar to the above, but Pseudo-GTID entries are inject in ascending lexical order. This allows orchestrator to perform further
+optimizations when searching for a given Pseudo-GTID entry on a master's binary logs.
+
+
+```sql
+create database if not exists meta;
+use meta;
+
+create table if not exists pseudo_gtid_status (
+  anchor                      int unsigned not null,
+  originating_mysql_host      varchar(128) charset ascii not null,
+  originating_mysql_port      int unsigned not null,
+  originating_server_id       int unsigned not null,
+  time_generated              timestamp not null default current_timestamp,
+  pseudo_gtid_uri             varchar(255) charset ascii not null,
+  pseudo_gtid_hint            varchar(255) charset ascii not null,
+  PRIMARY KEY (anchor)
+);
+
+drop event if exists create_pseudo_gtid_event;
+delimiter $$
+create event if not exists
+  create_pseudo_gtid_event
+  on schedule every 5 second starts current_timestamp
+  on completion preserve
+  enable
+  do
+    begin
+      DECLARE lock_result INT;
+      DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+    
+      set @connection_id := connection_id();
+      set @now := now();
+      set @rand := floor(rand()*(1 << 32));
+      set @pseudo_gtid_hint := concat_ws(':', lpad(hex(unix_timestamp(@now)), 8, '0'), lpad(hex(@connection_id), 16, '0'), lpad(hex(@rand), 8, '0'));
+      set @_create_statement := concat('drop ', 'view if exists `meta`.`_pseudo_gtid_', 'hint__asc:', @pseudo_gtid_hint, '`');
+      PREPARE st FROM @_create_statement;
+      EXECUTE st;
+      DEALLOCATE PREPARE st;
+      
+      /*!50600
+      SET innodb_lock_wait_timeout = 1;
+      */
+      SET lock_result = GET_LOCK('pseudo_gtid_status', 0); 
+      IF lock_result = 1 THEN
+        set @serverid := @@server_id;
+        set @hostname := @@hostname;
+        set @port := @@port;
+        set @pseudo_gtid := concat('pseudo-gtid://', @hostname, ':', @port, '/', @serverid, '/', date(@now), '/', time(@now), '/', @rand);
+        insert into pseudo_gtid_status (
+             anchor, 
+             originating_mysql_host, 
+             originating_mysql_port, 
+             originating_server_id, 
+             time_generated, 
+             pseudo_gtid_uri,
+             pseudo_gtid_hint
+          )
+      	  values (1, @hostname, @port, @serverid, @now, @pseudo_gtid, @pseudo_gtid_hint)
+      	  on duplicate key update 
+      		  originating_mysql_host = values(originating_mysql_host), 
+      		  originating_mysql_port = values(originating_mysql_port), 
+      		  originating_server_id = values(originating_server_id), 
+      		  time_generated = values(time_generated), 
+       		  pseudo_gtid_uri = values(pseudo_gtid_uri),
+       		  pseudo_gtid_hint = values(pseudo_gtid_hint)	
+        ;
+        SET lock_result = RELEASE_LOCK('pseudo_gtid_status');
+      END IF;
+    end
+$$
+
+delimiter ;
+
+set global event_scheduler := 1;
+```
+
+   and the matching configuration entries:
+
+```json
+{
+  "PseudoGTIDPattern": "drop view if exists .*?`_pseudo_gtid_hint__",
+  "DetectPseudoGTIDQuery": "select count(*) as pseudo_gtid_exists from meta.pseudo_gtid_status where anchor = 1 and time_generated > now() - interval 2 day",
+  "PseudoGTIDMonotonicHint": "asc:",
+}
+```
+
+Note that the `@pseudo_gtid_hint` value is composed of UTC timestamp (encoded in hex) followed by other values (connection_id, random). This makes entries increasing in lexical order.
+
+The `PseudoGTIDMonotonicHint` configuration variable tells _orchestrator_ that if it finds the value (`asc:`) in the Pseudo-GTID entry text, then it is to be
+trusted that said entry was injected as part of monotonicly increasing Pseudo-GTID entries. This will kick in a search optimization on the master's binary logs.
+
 
 The author of _orchestrator_ uses this last method injection.
 
