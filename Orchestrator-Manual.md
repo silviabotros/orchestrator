@@ -70,7 +70,7 @@ However the [build script](https://github.com/outbrain/orchestrator/blob/master/
 
 ## Installation
 
-For production deployments, see [Orchestrator Deployment](https://github.com/outbrain/orchestrator/wiki/Orchestrator-deployment). The following text walks you through the manual way of installation and the necessary configuration to make it work.
+For production deployments, see [Orchestrator deployment](https://github.com/outbrain/orchestrator/wiki/Orchestrator-deployment). The following text walks you through the manual way of installation and the necessary configuration to make it work.
 
 The following assumes you will be using the same machine for both the _orchestrator_ binary and the MySQL backend.
 If not, replace `127.0.0.1` with appropriate host name. Replace `orch_backend_password` with your own super secret password.
