@@ -1,5 +1,3 @@
-## Orchestrator first steps
-
 You have _Orchestrator_ installed and deployed. What can you do with it?
 
 A walk through common commands, mostly on the CLI side
