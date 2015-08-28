@@ -1428,36 +1428,6 @@ You might want to configure the following:
 ]
 ```
 
-## Supported topologies
-
-_Orchestrator_ *supports*:
-* "standard" MySQL replication. The standard replication is the type of replication present in
-MySQL up to and including version **5.5**. 
-* GTID replication. Both Oracle GTID and MariaDB GTID are supported.
-* Single master (aka standard) replication
-
-The following are *not supported*:
-* Parallel replication
-* Multi-master replication (as in MariaDB **10.0**)
-* Tungsten replication
-
-Also note:
-
-Master-master (ring) replication is supported for two master nodes. Topologies of three master nodes or more in a ring are unsupported.
-
-Galera/XtraDB Cluster replication is not strictly supported: _orchestrator_ will not recognize that co-masters
-in a Galera topology are related. Each such master would appear to _orchestrator_ to be the head of its own distinct
-topology.
-
-Replication topologies with multiple MySQL instances on the same host are supported. For example, the testing
-environment for _orchestrator_ is composed of four instances all running on the same machine, courtesy MySQLSandbox.
-However, MySQL's lack of information sharing between slaves and masters make it impossible for _orchestrator_ to
-analyze the topology top-to-bottom, since a master does not know which ports its slaves are listening on.
-The default assumption is that slaves are listening on same port as their master. With multiple instances on a single
-machine (and on same network) this is impossible. In such case you must configure your MySQL instances'
-`report_host` and `report_port` ([read more](http://code.openark.org/blog/mysql/the-importance-of-report_host-report_port))
-parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to `true`.
-
 ## Pseudo GTID
 
 Pseudo GTID is the method of injecting unique entries into the binary logs, such that they can be used to
@@ -2005,6 +1975,45 @@ For security measures, an agent requires a token to operate all but the simplest
 by the agent and negotiated with *orchestrator*. *Orchestrator* does not expose the agent's token (right now some work
 needs to be done on obscurring the token on error messages).
 
+
+## Supported Topologies and Versions
+
+The following setups are supported by _orchestrator_:
+
+- Plain-old MySQL replication; the _classic_ one, based on log file + position
+- GTID replication. Both Oracle GTID and MariaDB GTID are supported.
+- Statement based replication (SBR)
+- Row based replication (RBR)
+- Semi-sync replication
+- Single master (aka standard) replication
+- Master-Master (two node in circle) replication
+- 5.7 Parallel replication, when in-order-replication is enabled (see [slave_preserve_commit_order](http://dev.mysql.com/doc/refman/5.7/en/replication-options-slave.html#sysvar_slave_preserve_commit_order)).
+
+The following setups are _unsupported_:
+
+- Master-master...-master (circular) replication with 3 or more nodes in ring.
+- 5.6 Parallel (thread per schema) replication
+- Multi master replication (one slave replicating from multiple masters)
+- Tungsten replicator
+
+
+Also note:
+
+Master-master (ring) replication is supported for two master nodes. Topologies of three master nodes or more in a ring are unsupported.
+
+Galera/XtraDB Cluster replication is not strictly supported: _orchestrator_ will not recognize that co-masters
+in a Galera topology are related. Each such master would appear to _orchestrator_ to be the head of its own distinct
+topology.
+
+Replication topologies with multiple MySQL instances on the same host are supported. For example, the testing
+environment for _orchestrator_ is composed of four instances all running on the same machine, courtesy MySQLSandbox.
+However, MySQL's lack of information sharing between slaves and masters make it impossible for _orchestrator_ to
+analyze the topology top-to-bottom, since a master does not know which ports its slaves are listening on.
+The default assumption is that slaves are listening on same port as their master. With multiple instances on a single
+machine (and on same network) this is impossible. In such case you must configure your MySQL instances'
+`report_host` and `report_port` ([read more](http://code.openark.org/blog/mysql/the-importance-of-report_host-report_port))
+parameters, and set _orchestrator_'s configuration parameter `DiscoverByShowSlaveHosts` to `true`.
+
 ## Risks
 
 Most of the time _orchestrator_ only reads status from your topologies. Default configuration is to poll each instance once per minute.
@@ -2059,31 +2068,6 @@ over time.
 * Don't restart _orchestrator_ while you're running a seed (only applies to workingwith _orchestrator-agent_)
 
   Otherwise _orchestrator_ is non-intrusive and self-healing. You can restart it whenever you like.
-
-
-## Supported Topologies and Versions
-
-The following setups are supported by _orchestrator_:
-
-- Plain-old MySQL replication; the _classic_ one, based on log file + position
-- Statement based replication (SBR)
-- Row based replication (RBR)
-- Semi-sync replication
-- Master-Master (two node in circle) replication
-- MariaDB GTID (with limitations on crash recoveries)
-- 5.7 Parallel replication, when in-order-replication is enabled (see [slave_preserve_commit_order](http://dev.mysql.com/doc/refman/5.7/en/replication-options-slave.html#sysvar_slave_preserve_commit_order)).
-
-The following setups are _unsupported_:
-
-- Master-master...-master (circular) replication with 3 or more nodes in ring.
-- 5.6 Parallel (thread per schema) replication
-- Multi master replication (one slave replicating from multiple masters)
-- Tungsten replicator
-- Oracle GTID (>= 5.6). Work on its way.
-
-The following setups are partially supported:
-
-- Galera; _orchestrator_ does not recognize Galera masters as having relationships; it will recognize each as its own standalone master.
 
 
 ## Bugs
