@@ -111,6 +111,33 @@ If you want to have greater control:
  - Normal file:pos operations are done via `move-up`, `move-below`
  - Pseudo-GTID specific slave relocation, use `match`, `match-slaves`, `regroup-slaves`.
  - Binlog server operations are typically done with `repoint`, `repoint-slaves`
+
+#### Replication control
+
+You are easily able to see what the following do:
+
+	$ orchestrator -c stop-slave -i a.slave.8.instance.com
+	$ orchestrator -c start-slave -i a.slave.8.instance.com
+	$ orchestrator -c restart-slave -i a.slave.8.instance.com
+	$ orchestrator -c set-read-only -i a.slave.8.instance.com
+	$ orchestrator -c set-writeable -i a.slave.8.instance.com
+
+Break replication by messing with a slave's binlog coordinates:
+
+	$ orchestrator -c detach-slave -i a.slave.8.instance.com
+
+Don't worry: this is reversible:
+
+	$ orchestrator -c reattach-slave -i a.slave.8.instance.com
+
+This works for normal file:pos as well as GTID setups:	
+	
+	$ orchestrator -c skip-query -i a.slave.8.instance.com
+
+Toggle GTID mode (Oracle & MariaDB):
+	
+	$ orchestrator -c disable-gtid -i a.slave.8.instance.com
+	$ orchestrator -c enable-gtid -i a.slave.8.instance.com
 	
 #### Crash analysis & recovery
 
@@ -146,33 +173,6 @@ Ask _orchestrator_ to recover the above dead intermediate master:
 	    + a.slave.3.instance.com:3306 [OK,5.6.17-log,STATEMENT]
 	  + a.slave.5.instance.com:3306 [OK,5.6.17-log,STATEMENT]
 	  + a.slave.7.instance.com:3306 [OK,5.6.17-log,STATEMENT,>>]
-
-#### Replication control
-
-You are easily able to see what the following do:
-
-	$ orchestrator -c stop-slave -i a.slave.8.instance.com
-	$ orchestrator -c start-slave -i a.slave.8.instance.com
-	$ orchestrator -c restart-slave -i a.slave.8.instance.com
-	$ orchestrator -c set-read-only -i a.slave.8.instance.com
-	$ orchestrator -c set-writeable -i a.slave.8.instance.com
-
-Break replication by messing with a slave's binlog coordinates:
-
-	$ orchestrator -c detach-slave -i a.slave.8.instance.com
-
-Don't worry: this is reversible:
-
-	$ orchestrator -c reattach-slave -i a.slave.8.instance.com
-
-This works for normal file:pos as well as GTID setups:	
-	
-	$ orchestrator -c skip-query -i a.slave.8.instance.com
-
-Toggle GTID mode (Oracle & MariaDB):
-	
-	$ orchestrator -c disable-gtid -i a.slave.8.instance.com
-	$ orchestrator -c enable-gtid -i a.slave.8.instance.com
 
 #### More
 
