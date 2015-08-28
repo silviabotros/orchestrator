@@ -40,8 +40,7 @@ then _orchestrator_ sees these as three different topologies.
 
 ### Does orchestrator support GTID Replication?
 
-Not at this stage. This is mainly because the developers of _orchestrator_ feel GTID is not yet complete, 
-and are anyhow not using a MySQL version which supports GTID. It is likely that GTID will be supported in the future.
+Yes. Both Oracle GTID and MariaDB GTID are supported.
 
 ### Does orchestrator support 5.6 Parallel Replication (thread per schema)?
 
