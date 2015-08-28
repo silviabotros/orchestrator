@@ -49,3 +49,6 @@ CLI is deployed and can be executed from thousands of machines.
 ##### Visualized example
 
 ![Orchestrator deployment](images/orchestrator-deployment.png)
+
+In the above four _orchestrator_ services are behind an HTTP load balancer. Only one of them is the _leader_ at any given time; they compete for leadership between themselves and recognize if the leader is non doing its duty.
+
