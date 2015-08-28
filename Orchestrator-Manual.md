@@ -280,7 +280,7 @@ Move a slave up the topology (make it sbling of its master, or direct slave of i
 
 Move a slave below its sibling:
 
-    orchestrator -c move-below -i 127.0.0.1:22988 -s 127.0.0.1:22990 --debug cli
+    orchestrator -c move-below -i 127.0.0.1:22988 -d 127.0.0.1:22990 --debug cli
 
 > `-s` stands for `sibling`.
 
@@ -322,7 +322,7 @@ The following are Pseudo-GTID specific commands:
 
 Match a slave below another instance (we expect the other instance to be as advanced or more advanced than the moved slave)
 
-    orchestrator -c match-below -i 127.0.0.1:22988 -s 127.0.0.1:22990 --debug cli
+    orchestrator -c match-below -i 127.0.0.1:22988 -d 127.0.0.1:22990 --debug cli
 
 > The above required Pseudo GTID to be present and configured. It may take more time to execute as it needs to
 > look up entires in the servers binary log.
@@ -406,7 +406,7 @@ Cheatsheet:
 
 			orchestrator -c relocate-slaves -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master
 
-			orchestrator -c relocate-slaves -i instance.whose.slaves.will.relocate -s instance.that.becomes.their.master --pattern=regexp.filter
+			orchestrator -c relocate-slaves -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master --pattern=regexp.filter
 				only apply to those instances that match given regex
 
 	Topology refactoring using classic MySQL replication commands
@@ -440,9 +440,9 @@ Cheatsheet:
 			(e.g. has no binary logs, is of incompatible version, incompatible binlog format etc.)
 			Example:
 			
-			orchestrator -c move-below -i slave.to.move.com -s sibling.slave.under.which.to.move.com
+			orchestrator -c move-below -i slave.to.move.com -d sibling.slave.under.which.to.move.com
 
-			orchestrator -c move-below -s sibling.slave.under.which.to.move.com
+			orchestrator -c move-below -d sibling.slave.under.which.to.move.com
 				-i not given, implicitly assumed local hostname
 			
 		enslave-siblings
@@ -464,7 +464,7 @@ Cheatsheet:
 			are little sanity checks to this and this is a risky operation. Use cases are: a rename of the master's 
 			host, a corruption in relay-logs, move from beneath MaxScale & Binlog-server. Examples:
 			
-			orchestrator -c repoint -i slave.to.operate.on.com -s new.master.com
+			orchestrator -c repoint -i slave.to.operate.on.com -d new.master.com
 			
 			orchestrator -c repoint -i slave.to.operate.on.com
 				The above will repoint the slave back to its existing master without change 
@@ -541,9 +541,9 @@ Cheatsheet:
 			No action taken when destination instance cannot act as master (e.g. has no binary logs, is of incompatible version, incompatible binlog format etc.)
 			Examples:
 			
-			orchestrator -c match -i slave.to.relocate.com -s instance.that.becomes.its.master
+			orchestrator -c match -i slave.to.relocate.com -d instance.that.becomes.its.master
 
-			orchestrator -c match -s destination.instance.that.becomes.its.master
+			orchestrator -c match -d destination.instance.that.becomes.its.master
 				-i not given, implicitly assumed local hostname
 
 			(this command was previously named "match-below")
@@ -555,9 +555,9 @@ Cheatsheet:
 			respective position behind the instance (the more slaves, the more savings).
 			The instance itself may be crashed or inaccessible. It is not contacted throughout the operation. Examples:
 			
-			orchestrator -c match-slaves -i instance.whose.slaves.will.relocate -s instance.that.becomes.their.master
+			orchestrator -c match-slaves -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master
 			
-			orchestrator -c match-slaves -i instance.whose.slaves.will.relocate -s instance.that.becomes.their.master --pattern=regexp.filter
+			orchestrator -c match-slaves -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master --pattern=regexp.filter
 				only apply to those instances that match given regex
 			
 			(this command was previously named "multi-match-slaves")
