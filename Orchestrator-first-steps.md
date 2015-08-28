@@ -72,7 +72,7 @@ You may move servers around using various commands. The generic "figure things o
 `relocate` and `relocate-slaves`
 
 	# Move a.slave.3.instance.com to replicate from a.slave.4.instance.com
-	#
+	
 	$ orchestrator -c relocate -i a.slave.3.instance.com:3306 -d a.slave.4.instance.com
 	a.slave.3.instance.com:3306<a.slave.4.instance.com:3306
 	
@@ -88,7 +88,7 @@ You may move servers around using various commands. The generic "figure things o
 	+ a.slave.8.instance.com:3306 [OK,5.6.17-log,STATEMENT,>>]
 
 	# Move the slaves of 	a.slave.2.instance.com to replicate from a.slave.6.instance.com
-	#
+	
 	$ orchestrator -c relocate-slaves -i a.slave.2.instance.com:3306 -d a.slave.6.instance.com
 	a.slave.4.instance.com:3306
 	a.slave.5.instance.com:3306
