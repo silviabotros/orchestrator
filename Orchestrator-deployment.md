@@ -31,6 +31,8 @@ Orchestrator service:
 - You _can_ and _should_ have multiple _orchestrator_ services running on different machines, all running on the same backend database.
   - When running as a service, _orchestrator_ repeatedly attempts to claim _leadership_. Should one _orchestrator_ service
     fail, another one will pick up where it left.
+  - Only one service will be the leader at any given time.
+  - The leader is the one polling for servers; doing database cleanup; checking for crash recovery scenarios etc.
 - You may choose to have all your _orchestrator_ services load-balanced
 
 Orchestrator CLI:
@@ -43,3 +45,5 @@ Orchestrator CLI:
   
 The author of _orchestrator_ has it deployed on multiple machines as a service, behind a F5 load balancer. On the same setup,
 CLI is deployed and can be executed from thousands of machines.
+
+![Orchestrator deployment](images/orchestrator-deployment.png)
