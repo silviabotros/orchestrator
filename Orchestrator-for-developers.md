@@ -87,7 +87,7 @@ Replace `orch_host` with hostname or orchestrator machine (or do your wildcards 
 Go to the `Discovery` page at `http://localhost:3000/web/discover`. Type in a hostname & port for a known MySQL instance, preferably one that is part of a larger topology (again I like using _MySQLSandbox_ for such test environments). Submit it.
 
 Depending on your configuration (`DiscoveryPollSeconds`, `InstancePollSeconds`) this may take a few seconds to a minute for
-_orchestrator_ to fully scan the replication topology this instance belongs to, and present it under the [clusters dashbaord](http://localhost:3000/web/clusters/).
+_orchestrator_ to fully scan the replication topology this instance belongs to, and present it under the [clusters dashboard](http://localhost:3000/web/clusters/).
 
 If you've made it this far, you've done 90% of the work. You may consider configuring Pseudo GTID queries, DC awareness etc. See
 "want to have" sub-sections under [configuration](https://github.com/outbrain/orchestrator/wiki/Orchestrator-Manual#configuration).
