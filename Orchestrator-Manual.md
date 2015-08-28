@@ -1059,14 +1059,19 @@ command line mode.
 > For creators of frameworks and maintenance tools, it may provide with great powers (and great responsibility).
 
 The following is a brief listing of the web API exposed by _orchestrator_. Documentation tends to fall behind the code; see the
-latest [API source code](https://github.com/outbrain/orchestrator/blob/master/go/http/api.go) for the de-facto lsiting:
+latest [API source code](https://github.com/outbrain/orchestrator/blob/master/go/http/api.go) for the de-facto lsiting (scroll to end of file).
 
 * `/api/instance/:host/:port`: reads and returns an instance's details (example `/api/instance/mysql10/3306`)
-* `/api/discover/:host/:port`: discover given instance and all the topology it is associated with (example `/api/discover/mysql10/3306`)
+* `/api/discover/:host/:port`: discover given instance (a running _orchestrator_ service will pick it up from there and 
+recursively scan the entire topology)
 * `/api/refresh/:host/:port`: synchronously re-read instance status
 * `/api/forget/:host/:port`: remove records of this instance. It may be automatically rediscovered by
   following up on its master or one of its slaves.
 * `/api/resolve/:host/:port`: check if hostname resolves and whether TCP connection can be established (example: `/api/resolve/myhost.mydomain/3306`)  
+* `/api/relocate/:host/:port/:belowHost/:belowPort` (attempt to) move an instance below another instance. 
+_Orchestrator_ picks best course of action.
+* `/api/relocate-slaves/:host/:port/:belowHost/:belowPort` (attempt to) move slaves of an instance below another instance. 
+_Orchestrator_ picks best course of action.
 * `/api/move-up/:host/:port` (attempt to) move this instance up the topology (make it child of its grandparent)
 * `/api/move-below/:host/:port/:siblingHost/:siblingPort` (attempt to) move an instance below its sibling.
   the two provided instances must be siblings: slaves of the same master. (example `/api/move-below/mysql10/3306/mysql24/3306`)
