@@ -1113,8 +1113,8 @@ This sample is followed by a field breakdown:
 {
 
     "Key": {
-        "Hostname": "snoach-ams9",
-        "Port": 21088
+        "Hostname": "mysql.02.instance.com",
+        "Port": 3306
     },
     "Uptime": 45,
     "ServerID": 101,
@@ -1129,8 +1129,8 @@ This sample is followed by a field breakdown:
         "Type": 0
     },
     "MasterKey": {
-        "Hostname": "snoach-ams9",
-        "Port": 21087
+        "Hostname": "mysql.01.instance.com",
+        "Port": 3306
     },
     "Slave_SQL_Running": true,
     "Slave_IO_Running": true,
@@ -1167,7 +1167,7 @@ This sample is followed by a field breakdown:
         "Valid": true
     },
     "SlaveHosts": [ ],
-    "ClusterName": "snoach-ams9:21087",
+    "ClusterName": "mysql.01.instance.com:3306",
     "DataCenter": "",
     "PhysicalEnvironment": "",
     "ReplicationDepth": 1,
