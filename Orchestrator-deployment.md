@@ -13,7 +13,7 @@ The following hints should clear up some questions:
 - _Orchestrator_ can run in command line mode
   - Useful for us CLI geeks who want to have greater control and capture all the lovely debug messages
 
-In terms of deployment:
+###### In terms of deployment
 
 - _Orchestrator_ uses a MySQL backend.
 - The backend database has the _state_ of your topologies. _Orchestrator_ is almost stateless.
@@ -26,7 +26,7 @@ The MySQL backend is a master server, for which you may have slaves for redundan
 
 The author of _orchestrator_ has deployed it in large environments of thousands of servers, with a single backend database managing them all.
 
-Orchestrator service:
+###### Orchestrator service
 
 - You _can_ and _should_ have multiple _orchestrator_ services running on different machines, all running on the same backend database.
   - When running as a service, _orchestrator_ repeatedly attempts to claim _leadership_. Should one _orchestrator_ service
@@ -35,7 +35,7 @@ Orchestrator service:
   - The leader is the one polling for servers; doing database cleanup; checking for crash recovery scenarios etc.
 - You may choose to have all your _orchestrator_ services load-balanced
 
-Orchestrator CLI:
+###### Orchestrator CLI
 - You _can_ and _should_ have as many deployments of orchestrator CLI as you like, on multiple servers, all configured to work
   with the _same backend MySQL_
 - You _may_ concurrently issue commands from multiple CLIs, as well as working with the Web UI at the same time.
