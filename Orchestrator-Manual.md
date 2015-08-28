@@ -37,7 +37,6 @@ The majority of users still use plain-old binlog file:position based MySQL repli
 - [Using the web API](#using-the-web-api)
 - [Security](#security)
 - [Configuration](#configuration)
-- [Supported topologies](#supported-topologies)
 - [Pseudo GTID](#pseudo-gtid)
 - [Topology recovery](#topology-recovery)
 - [Agents](#agents)
