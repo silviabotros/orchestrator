@@ -46,4 +46,6 @@ The author of _orchestrator_ has deployed it in large environments of thousands 
 The author of _orchestrator_ has it deployed on multiple machines as a service, behind a F5 load balancer. On the same setup,
 CLI is deployed and can be executed from thousands of machines.
 
+##### Visualized example
+
 ![Orchestrator deployment](images/orchestrator-deployment.png)
