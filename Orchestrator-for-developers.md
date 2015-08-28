@@ -1,5 +1,3 @@
-## Orchestrator for developers
-
 _Orchestrator_ is open source and accepts pull requests.
 
 If you would like to build _orchestrator_ on your own machine, or eventually submit PRs, follow this guide.
