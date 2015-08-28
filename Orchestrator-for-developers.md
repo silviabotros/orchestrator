@@ -63,7 +63,35 @@ You should now be able to
 
 	go run go/cmd/orchestrator/main.go http
 	
-This will also invoke initial setup of your database environment (creating necessary tables in the `orchestrator` schema)
+This will also invoke initial setup of your database environment (creating necessary tables in the `orchestrator` schema).
+
+Browse into `http://localhost:3000` or replace `localhoast` with your dev hostname. You should see the orchestrator (empty) clusters dashboard.
+
+Now to make stuff interesting.
+
+#### Grant access to orchestrator on all your MySQL servers
+For _orchestrator_ to detect your replication topologies, it must also have an account on each and every topology. At this stage this has to be the
+same account (same user, same password) for all topologies. On each of your masters, issue the following:
+
+    GRANT SUPER, PROCESS, REPLICATION SLAVE ON *.* TO 'orchestrator'@'orch_host' IDENTIFIED BY 'orch_topology_password';
+
+> REPLICATION SLAVE is required if you intend to use [Pseudo GTID](#pseudo-gtid)
+
+Replace `orch_host` with hostname or orchestrator machine (or do your wildcards thing). Choose your password wisely. Edit `orchestrator.conf.json` to match:
+
+    "MySQLTopologyUser": "orchestrator",
+    "MySQLTopologyPassword": "orch_topology_password",
+
+#### Discovering MySQL instances
+
+Go to the `Discovery` page at `http://localhost:3000/web/discover`. Type in a hostname & port for a known MySQL instance, preferably one that is part of a larger topology (again I like using _MySQLSandbox_ for such test environments). Submit it.
+
+Depending on your configuration (`DiscoveryPollSeconds`, `InstancePollSeconds`) this may take a few seconds to a minute for
+_orchestrator_ to fully scan the replication topology this instance belongs to, and present it under the [clusters dashbaord](http://localhost:3000/web/clusters/).
+
+If you've made it this far, you've done 90% of the work. You may consider configuring Pseudo GTID queries, DC awareness etc. See
+"want to have" sub-sections under [configuration](https://github.com/outbrain/orchestrator/wiki/Orchestrator-Manual#configuration).
+
 
 #### Building 
 
