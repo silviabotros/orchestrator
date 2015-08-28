@@ -124,7 +124,7 @@ Break replication by messing with a slave's binlog coordinates:
 
 	$ orchestrator -c detach-slave -i a.slave.8.instance.com
 
-Don't worry: this is reversible:
+Don't worry, this is reversible:
 
 	$ orchestrator -c reattach-slave -i a.slave.8.instance.com
 
