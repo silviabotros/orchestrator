@@ -4,12 +4,12 @@ _Orchestrator_ is open source and accepts pull requests.
 
 If you would like to build _orchestrator) on your own machine, or eventually submit PRs, follow this guide.
 
-## Requirements
+#### Requirements
 
 _Orchestrator_ is built on Linux. OS/X should generally follow same guidelines. I have no hint about MS Windows, and the 
 build is incompatible with Windows.
 
-## Go setup
+#### Go setup
 
 You will need to have a Go environment. At this time (2015-08-28) _orchestrator_ is built with Go `1.4`.
 
@@ -29,7 +29,7 @@ Test that your code builds via
 
 	go run go/cmd/orchestrator/main.go
 	
-## DB setup
+#### DB setup
 
 _Orchestrator_ requires a MySQL backend to run. This could be installed anywhere. I usually use [mysqlsandbox](http://mysqlsandbox.net/) for local installations. You may choose to just install mysql-server on your dev machine.
 
@@ -57,7 +57,7 @@ Edit `orchestrator.conf.json` to match the above as follows:
 
 Edit the above as as fit for your MySQL backend install.
 
-## Executing from dev environment
+#### Executing from dev environment
 
 You should now be able to
 
@@ -65,7 +65,7 @@ You should now be able to
 	
 This will also invoke initial setup of your database environment (creating necessary tables in the `orchestrator` schema)
 
-## Building 
+#### Building 
 
 To build an _Orchestrator_ package, use the `build.sh` script:
 
@@ -93,3 +93,24 @@ You will need:
   echo
 }
 ```	
+
+### Forking and Pull-Requesting
+
+If you want to submit [pull-requests](https://help.github.com/articles/using-pull-requests/) you should first fork `http://github.com/outbrain/orchestrator`.
+
+Setting up the environment is basically the same, except you don't want to 
+
+	go get github.com/outbrain/orchestrator
+	
+But instead clone your own repository. Or you can 
+
+	go get github.com/your-account/orchestrator
+
+Or do your Git thing and change origin. This is on you.
+
+You will have a fork of _orchestrator_ to which you can push your changes and from which you can send pull requests.
+It is best that you first consult (use the [project issues](https://github.com/outbrain/orchestrator/issues)) whether some kind of development would be merged.
+
+You will need to license your code in Apache 2.0 or compatible license.
+
+Thank you for considering to contribute to _orchestrator_!
