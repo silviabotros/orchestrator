@@ -52,3 +52,17 @@ CLI is deployed and can be executed from thousands of machines.
 
 In the above four _orchestrator_ services are behind an HTTP load balancer. Only one of them is the _leader_ at any given time; they compete for leadership between themselves and recognize if the leader is non doing its duty.
 
+To the right: the many topologies polled by _orchestrator_. The leader polls each an every server in those topologies.
+
+On top left: the _orchestrator_ MySQL backend: a master & three slaves. All 4 services use the same backend database.
+
+Not shown in this picture (for clarity purposes), but the _orchestrator_ backend database and its slaves are themselves one of those topologies
+polled by _orchestrator_ It eats its own dogfood.
+
+On left, bottom: _orchestrator_ CLI is installed on any and all MySQL servers. All these CLI deployments use the very same
+MySQL backend database.
+
+Not shown in this picture (for clarity purposes), the MySQL servers on these hosts are being polled by _orchestrator_ just as those
+on the right. 
+
+You may choose to install _orchestrator_ on non-MySQL hosts, of course. It has no MySQL dependencies on the deployed host.
