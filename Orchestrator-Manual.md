@@ -1103,10 +1103,6 @@ _Orchestrator_ picks best course of action.
 * `/api/audit`: show most recent audit entries
 * `/api/audit/:page`: show latest audit entries, paginated (example: `/api/audit/3` for 3rd page)  
 
-Incompatible change:
-
-* Removed `/api/detach-slave/:host/:port` due to unsafe behavior
-
 
 #### Instance JSON breakdown
 
