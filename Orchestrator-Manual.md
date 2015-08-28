@@ -1058,7 +1058,8 @@ command line mode.
 > Most users will not be interested in accessing the API. If you're unsure: you don't need it.
 > For creators of frameworks and maintenance tools, it may provide with great powers (and great responsibility).
 
-The following is a brief listing of the web API exposed by _orchestrator_:
+The following is a brief listing of the web API exposed by _orchestrator_. Documentation tends to fall behind the code; see the
+latest [API source code](https://github.com/outbrain/orchestrator/blob/master/go/http/api.go) for the de-facto lsiting:
 
 * `/api/instance/:host/:port`: reads and returns an instance's details (example `/api/instance/mysql10/3306`)
 * `/api/discover/:host/:port`: discover given instance and all the topology it is associated with (example `/api/discover/mysql10/3306`)
