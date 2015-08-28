@@ -1111,61 +1111,77 @@ This sample is followed by a field breakdown:
 
 ```json
 {
+
     "Key": {
-        "Hostname": "127.0.0.1",
-        "Port": 22988
+        "Hostname": "snoach-ams9",
+        "Port": 21088
     },
+    "Uptime": 45,
     "ServerID": 101,
-    "Version": "5.5.32-log",
+    "Version": "5.6.22-log",
     "ReadOnly": false,
-    "Binlog_format": "STATEMENT",
+    "Binlog_format": "ROW",
     "LogBinEnabled": true,
     "LogSlaveUpdatesEnabled": true,
     "SelfBinlogCoordinates": {
-        "LogFile": "mysql-bin.000016",
-        "LogPos": 10930
+        "LogFile": "mysql-bin.015656",
+        "LogPos": 15082,
+        "Type": 0
     },
     "MasterKey": {
-        "Hostname": "127.0.0.1",
-        "Port": 22987
+        "Hostname": "snoach-ams9",
+        "Port": 21087
     },
     "Slave_SQL_Running": true,
     "Slave_IO_Running": true,
+    "HasReplicationFilters": false,
+    "SupportsOracleGTID": true,
+    "UsingOracleGTID": true,
+    "UsingMariaDBGTID": false,
+    "UsingPseudoGTID": false,
     "ReadBinlogCoordinates": {
-        "LogFile": "mysql-bin.000030",
-        "LogPos": 10995
+        "LogFile": "mysql-bin.015993",
+        "LogPos": 20146,
+        "Type": 0
     },
     "ExecBinlogCoordinates": {
-        "LogFile": "mysql-bin.000030",
-        "LogPos": 10995
+        "LogFile": "mysql-bin.015993",
+        "LogPos": 20146,
+        "Type": 0
     },
+    "RelaylogCoordinates": {
+        "LogFile": "mysql_sandbox21088-relay-bin.000051",
+        "LogPos": 16769,
+        "Type": 1
+    },
+    "LastSQLError": "",
+    "LastIOError": "",
     "SecondsBehindMaster": {
         "Int64": 0,
         "Valid": true
     },
+    "SQLDelay": 0,
+    "ExecutedGtidSet": "230ea8ea-81e3-11e4-972a-e25ec4bd140a:1-49",
     "SlaveLagSeconds": {
         "Int64": 0,
         "Valid": true
     },
-    "SlaveHosts": [
-        {
-            "Hostname": "127.0.0.1",
-            "Port": 22990
-        },
-        {
-            "Hostname": "127.0.0.1",
-            "Port": 22989
-        }
-    ],
-    "ClusterName": "127.0.0.1:22987",
+    "SlaveHosts": [ ],
+    "ClusterName": "snoach-ams9:21087",
+    "DataCenter": "",
+    "PhysicalEnvironment": "",
+    "ReplicationDepth": 1,
+    "IsCoMaster": false,
     "IsLastCheckValid": true,
     "IsUpToDate": true,
     "IsRecentlyChecked": true,
     "SecondsSinceLastSeen": {
-        "Int64": 8,
+        "Int64": 9,
         "Valid": true
     },
-    "CountMySQLSnapshots": 0
+    "CountMySQLSnapshots": 0,
+    "IsCandidate": false,
+    "UnresolvedHostname": ""
 }
 ```
 
@@ -1180,18 +1196,34 @@ This sample is followed by a field breakdown:
 * `MasterKey`: hostname & port of master, if any
 * `Slave_SQL_Running`: direct mapping from `SHOW SLAVE STATUS`'s `Slave_SQL_Running`
 * `Slave_IO_Running`: direct mapping from `SHOW SLAVE STATUS`'s `Slave_IO_Running`
+* `HasReplicationFilters`: true if there's any replication filter
+* `SupportsOracleGTID`: true if cnfigured with `gtid_mode` (Oracle MySQL >= 5.6)
+* `UsingOracleGTID`: true if slave replicates via Oracle GTID
+* `UsingMariaDBGTID`:  true if slave replicates via MariaDB GTID
+* `UsingPseudoGTID`: true if slave known to have Pseudo-GTID coordinates (see related `DetectPseudoGTIDQuery` config)
 * `ReadBinlogCoordinates`: (when replicating) the coordinates being read from the master (what `IO_THREAD` polls)
 * `ExecBinlogCoordinates`: (when replicating) the master's coordinates that are being executed right now (what `SQL_THREAD` executed)
+* `RelaylogCoordinates`: (when replicating) the relay log's coordinates that are being executed right now
+* `LastSQLError`: copied from `SHOW SLAVE STATUS`
+* `LastIOError`: copied from `SHOW SLAVE STATUS`
 * `SecondsBehindMaster`: direct mapping from `SHOW SLAVE STATUS`'s `Seconds_Behind_Master`
     `"Valid": false` indicates a `NULL`
+* `SQLDelay`: the configured `MASTER_DELAY`
+* `ExecutedGtidSet`: if using Oracle GTID, the executed GTID set
 * `SlaveLagSeconds`: when `SlaveLagQuery` provided, the computed slave lag; otherwise same as `SecondsBehindMaster`
 * `SlaveHosts`: list of MySQL slaves *hostname & port)
 * `ClusterName`: name of cluster this instance is associated with; uniquely identifies cluster
+* `DataCenter`: (metadata) name of data center, infered by `DataCenterPattern` config variable
+* `PhysicalEnvironment`: (metadata) name of environment, infered by `PhysicalEnvironmentPattern` config variable
+* `ReplicationDepth`: distance from the master (master is `0`, direct slave is `1` and so on)
+* `IsCoMaster`: true when this instanceis part of a master-master pair
 * `IsLastCheckValid`: whether last attempt at reading this instane succeeeded
 * `IsUpToDate`: whether this data is up to date
 * `IsRecentlyChecked`: whether a read attempt on this instance has been recently made
 * `SecondsSinceLastSeen`: time elapsed since last successfully accessed this instance
 * `CountMySQLSnapshots`: number of known snapshots (data provided by `orchestrator-agent`)
+* `IsCandidate`: (metadata) `true` when this instance has been marked as _candidate_ via the "register-candidate" CLI command. Can be used in crash recovery for prioritizing failover options
+* `UnresolvedHostname`: name this host _unresolves_ to, as indicated by the "register-hostname-unresolve" CLI command
 
 
 ## Security
