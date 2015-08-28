@@ -109,8 +109,8 @@ But instead clone your own repository. Or you can
 Or do your Git thing and change origin. This is on you.
 
 You will have a fork of _orchestrator_ to which you can push your changes and from which you can send pull requests.
-It is best that you first consult (use the [project issues](https://github.com/outbrain/orchestrator/issues)) whether some kind of development would be merged.
+It is best that you first consult (use the [project issues](https://github.com/outbrain/orchestrator/issues)) whether some kind of development would indeed be merged.
 
-You will need to license your code in Apache 2.0 or compatible license.
+You will need to license your code in [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) or compatible.
 
 Thank you for considering to contribute to _orchestrator_!
