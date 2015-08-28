@@ -178,7 +178,9 @@ The above is useful for development and testing purposes. You probably wish to k
 
 #### Executing via command line
 
-Following is a synopsis of command line samples. For simplicitly, we assume `orchestrator` is in your path.
+Also consult the [Orchestrator first steps](https://github.com/outbrain/orchestrator/wiki/Orchestrator-first-steps) page.
+
+Following is a synopsis of command line samples. For simplicity, we assume `orchestrator` is in your path.
 If not, replace `orchestrator` with `/path/to/orchestrator`.
 
 > Samples below use a test `mysqlsandbox` topology, where all instances are on same host `127.0.0.1` and on different ports. `22987` is master,
