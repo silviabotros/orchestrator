@@ -229,6 +229,49 @@ Print an ASCII tree of topology instances. Pass a cluster name via `-i` (see `cl
 >       + 127.0.0.1:22988
 >     + 127.0.0.1:22990
 
+Move the slave around the topology:
+
+    orchestrator -c relocate -i 127.0.0.1:22988 -d 127.0.0.1:22987
+
+> Resulting topology:
+>
+>     127.0.0.1:22987
+>     + 127.0.0.1:22989
+>     + 127.0.0.1:22988
+>     + 127.0.0.1:22990
+    
+The above happens to move the slave one level up. However the `relocate` command accepts any valid destination. `relocate` 
+figures out the best way to move a slave. If GTID is enabled, use it. If Pseudo-GTID is available, use it. If a binlog server is
+involved, use it. I _orchestrator_ has further insight into the specific coordinates involved, use it. Otherwise just use
+plain-old binlog log file:pos math.
+
+Similar to `relocate`, you can move multiple slaves via `relocate-slaves`. This moves slaves-of-an-instance below another server.
+     
+> Assume this:
+>
+>     10.0.0.1:3306
+>     + 10.0.0.2:3306
+>       + 10.0.0.3:3306
+>       + 10.0.0.4:3306
+>       + 10.0.0.5:3306
+>     + 10.0.0.6:3306
+
+    orchestrator -c relocate-slaves -i 10.0.0.2:3306 -d 10.0.0.6
+     
+> Results with:
+>
+>     10.0.0.1:3306
+>     + 10.0.0.2:3306
+>     + 10.0.0.6:3306
+>       + 10.0.0.3:3306
+>       + 10.0.0.4:3306
+>       + 10.0.0.5:3306
+    
+> You may use `--pattern` to filter those slaves affected.
+
+Other command sgive you a more fine grained control on how your servers are relocated. Consider the _classic_ binary log file:pos
+way of repointing slaves:
+
 Move a slave up the topology (make it sbling of its master, or direct slave of its "grandparent"):
 
     orchestrator -c move-up -i 127.0.0.1:22988 cli
@@ -268,16 +311,14 @@ Reset a slave, effectively breaking down the replication (destructive action):
 > The word _classic_ relates to the method of using an up-and-alive topology, where all connections are good and
 > instances can be queried for their replication status.
 
-> In such a case _orchestrator_ does not and will not support complex changes (like arbitrarily moving a slave to another position)
-> since this would require affecting multiple servers, increasing the chance for something to go wrong or for the
-> total operation time to become prohibitively high without the DBA having a chance to get involved.
-> Our experience is that by working out these atomic operations the DBA is more in control of potential problems.
-> We also observed that it takes little extra time to initiate such multiple steps.
-
-> However _orchestrator_ also supports topology refactoring in situations where servers are inaccessible,
-> via Pseudo GTID technology. It may allow promoting a slave up the topology even as its master is dead, or
+> However _orchestrator_ also supports topology refactoring in situations where servers are inaccessible.
+> This could made to work via GTID and Pseudo-GTID.
+>
+> It may allow promoting a slave up the topology even as its master is dead, or
 > matching and synching the slaves of a failed master even though they all stopped replicating in different
-> positions. In such case a more relaxed method of movingthe slave is provided, called "_matching_".
+> positions.
+
+The following are Pseudo-GTID specific commands:
 
 Match a slave below another instance (we expect the other instance to be as advanced or more advanced than the moved slave)
 
