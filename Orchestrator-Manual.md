@@ -350,7 +350,7 @@ Just check if an instance can be connected: attempt to resolve hostname and make
 
     orchestrator -c resolve -i myhost.mydomain:3306
 
-Complete orchestrator CLI documentation
+##### Complete orchestrator CLI documentation
 
 ```
 orchestrator [-c command] [-i instance] [--verbose|--debug] [... cli ] | http
@@ -444,6 +444,17 @@ Cheatsheet:
 
             orchestrator -c move-below -d sibling.slave.under.which.to.move.com
                 -i not given, implicitly assumed local hostname
+                
+        move-equivalent
+            Moves a slave beneath another server, based on previously recorded "equivalence coordinates". Such coordinates
+            are obtained whenever orchestrator issues a CHANGE MASTER TO. The "before" and "after" masters coordinates are
+            persisted. In such cases where the newly relocated slave is unable to replicate (e.g. firewall issues) it is then
+            easy to revert the relocation via "move-equivalent".
+            The command works if and only if orchestrator has an exact mapping between the slave's current replication coordinates 
+            and some other coordinates.
+            Example:
+            
+            orchestrator -c move-equivalent -i slave.to.revert.master.position.com -d master.to.move.to.com              
             
         enslave-siblings
             Turn all siblings of a slave into its sub-slaves. No action taken for siblings that cannot become
@@ -501,6 +512,35 @@ Cheatsheet:
             orchestrator -c get-candidate-slave -i instance.with.slaves.one.of.which.may.be.candidate.com
             
 
+    Topology refactoring using GTID
+        These operations only work if GTID (either Oracle or MariaDB variants) is enabled on your servers.
+
+        move-gtid
+            Move a slave beneath another (destination) instance. Orchestrator will reject the operation if GTID is
+            not enabled on the slave, or is not supported by the would-be master.
+            You may try and move the slave under any other instance; there are no constraints on the family ties the
+            two may have, though you should be careful as not to try and replicate from a descendant (making an
+            impossible loop). 
+            Examples:
+            
+            orchestrator -c move-gtid -i slave.to.move.com -d instance.that.becomes.its.master
+
+            orchestrator -c match -d destination.instance.that.becomes.its.master
+                -i not given, implicitly assumed local hostname
+            
+        move-slaves-gtid
+            Moves all slaves of a given instance under another (destination) instance using GTID. This is a (faster) 
+            shortcut to moving each slave via "move-gtid".
+            Orchestrator will only move those slaves configured with GTID (either Oracle or MariaDB variants) and under the
+            condition the would-be master supports GTID.
+            Examples:
+            
+            orchestrator -c move-slaves-gtid -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master
+            
+            orchestrator -c move-slaves-gtid -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master --pattern=regexp.filter
+                only apply to those instances that match given regex
+                
+
     Topology refactoring using Pseudo-GTID
         These operations require that the topology's master is periodically injected with pseudo-GTID,
         and that the PseudoGTIDPattern configuration is setup accordingly. Also consider setting 
@@ -508,29 +548,6 @@ Cheatsheet:
         Operations via Pseudo-GTID are typically slower, since they involve scanning of binary/relay logs.
         They impose less constraints on topology locations and affect less servers. Only servers that
         are being relocateed have their replication stopped. Their masters or destinations are unaffected.
-
-        match-up
-            Transport the slave one level up the hierarchy, making it child of its grandparent. This is
-            similar in essence to move-up, only based on Pseudo-GTID. The master of the given instance 
-            does not need to be alive or connected (and could in fact be crashed). It is never contacted.
-            Grandparent instance must be alive and accessible.
-            Examples:
-            
-            orchestrator -c match-up -i slave.to.match.up.com:3306
-
-            orchestrator -c match-up
-                -i not given, implicitly assumed local hostname
-            
-        match-up-slaves
-            Matches slaves of the given instance one level up the topology, making them siblings of given instance.
-            This is a (faster) shortcut to executing match-up on all slaves of given instance. The instance need
-            not be alive / accessib;e / functional. It can be crashed.
-            Example:
-            
-            orchestrator -c match-up-slaves -i slave.whose.subslaves.will.match.up.com
-
-            orchestrator -c match-up-slaves -i slave.whose.subslaves.will.match.up.com[:3306] --pattern=regexp.filter
-                only apply to those instances that match given regex
 
         match
             Matches a slave beneath another (destination) instance. The choice of destination is almost arbitrary;
@@ -561,6 +578,29 @@ Cheatsheet:
                 only apply to those instances that match given regex
             
             (this command was previously named "multi-match-slaves")
+
+        match-up
+            Transport the slave one level up the hierarchy, making it child of its grandparent. This is
+            similar in essence to move-up, only based on Pseudo-GTID. The master of the given instance 
+            does not need to be alive or connected (and could in fact be crashed). It is never contacted.
+            Grandparent instance must be alive and accessible.
+            Examples:
+            
+            orchestrator -c match-up -i slave.to.match.up.com:3306
+
+            orchestrator -c match-up
+                -i not given, implicitly assumed local hostname
+            
+        match-up-slaves
+            Matches slaves of the given instance one level up the topology, making them siblings of given instance.
+            This is a (faster) shortcut to executing match-up on all slaves of given instance. The instance need
+            not be alive / accessib;e / functional. It can be crashed.
+            Example:
+            
+            orchestrator -c match-up-slaves -i slave.whose.subslaves.will.match.up.com
+
+            orchestrator -c match-up-slaves -i slave.whose.subslaves.will.match.up.com[:3306] --pattern=regexp.filter
+                only apply to those instances that match given regex
 
         rematch
             Reconnect a slave onto its master, via PSeudo-GTID. The use case for this operation is a non-crash-safe
