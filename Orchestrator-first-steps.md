@@ -8,11 +8,11 @@ A walk through common commands, mostly on the CLI side
 
 You need to discover your MySQL hosts. Either browse to your `http://orchestrator:3000/web/discover` page and submti an instance for discovery, or:
 
-	$ orchestrator -c discover some.mysql.instance.com:3306
+	$ orchestrator -c discover -i some.mysql.instance.com:3306
 	
 The `:3306` is not required, since the `DefaultInstancePort` configuration is `3306`. You may also
 
-	$ orchestrator -c discover some.mysql.instance.com
+	$ orchestrator -c discover -i some.mysql.instance.com
 
 This discovers a single instance. But: do you also have an _orchestrator_ service running? It will pick up from there and 
 will interrogate this instance for its master and slaves, recursively moving on until the entire topology is revealed.
