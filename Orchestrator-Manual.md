@@ -1569,6 +1569,9 @@ You might want to configure the following:
 "PostFailoverProcesses": [
   "echo 'Recovered from {failureType} on {failureCluster}. Failed: {failedHost}:{failedPort}; Successor: {successorHost}:{successorPort}'
 ],
+"PostUnsuccessfulFailoverProcesses": [
+  "echo 'There was a problem recovering from {failureType} on {failureCluster}. Failed: {failedHost}:{failedPort}'
+],
 "PostMasterFailoverProcesses": [
   "echo 'Recovered from {failureType} on {failureCluster}. Failed: {failedHost}:{failedPort}; Promoted: {successorHost}:{successorPort}'
 ],
@@ -2072,6 +2075,8 @@ shell, in particular `bash`. Hooks are:
   Order of execution is sequential. Failures are ignored (the recovery is done in terms of _orchestrator_).
 - `PostFailoverProcesses`: commands to run after recovery of any type (and following the specific `PostIntermediateMasterFailoverProcesses`
   or `PostMasterFailoverProcesses` commands). Failures are ignored.
+- `PostUnsuccessfulFailoverProcesses`: commands to run when recovery operation resulted with error, such that there is no known successor instance
+
 
 ### Recovery configuration
 
