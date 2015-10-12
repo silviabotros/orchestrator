@@ -125,9 +125,11 @@ Edit `orchestrator.conf.json` to match the above as follows:
 For _orchestrator_ to detect your replication topologies, it must also have an account on each and every topology. At this stage this has to be the
 same account (same user, same password) for all topologies. On each of your masters, issue the following:
 
-    GRANT SUPER, PROCESS, REPLICATION SLAVE ON *.* TO 'orchestrator'@'orch_host' IDENTIFIED BY 'orch_topology_password';
+    GRANT SUPER, PROCESS, REPLICATION SLAVE, RELOAD ON *.* TO 'orchestrator'@'orch_host' IDENTIFIED BY 'orch_topology_password';
 
-> REPLICATION SLAVE is required if you intend to use [Pseudo GTID](#pseudo-gtid)
+> `REPLICATION SLAVE` is required for `SHOW SLAVE HOSTS`, and for scanning binary logs in favor of [Pseudo GTID](#pseudo-gtid)
+> `RELOAD` required for `RESET SLAVE` operation
+> `PROCESS` required to see slave processes in `SHOW PROCESSLIST`
 
 Replace `orch_host` with hostname or orchestrator machine (or do your wildcards thing). Choose your password wisely. Edit `orchestrator.conf.json` to match:
 
