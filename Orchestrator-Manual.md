@@ -1,4 +1,4 @@
-[[Table of Contents]](#TOC)
+[Table of Contents](#toc)
 
 ## About
 
