@@ -365,15 +365,20 @@ Just check if an instance can be connected: attempt to resolve hostname and make
 ##### Complete orchestrator CLI documentation
 
 ```
-orchestrator [-c command] [-i instance] [--verbose|--debug] [... cli ] | http
+orchestrator [-c command] [-i instance] [-d destination] [--verbose|--debug] [... cli ] | http
 
 Cheatsheet:
     Run orchestrator in HTTP mode:
     
         orchestrator --debug http
-    
-    For CLI executuon see details below.
-        
+
+    See all possible commands:
+
+        orchestrator -c help
+
+    Usage for most commands:
+        orchestrator -c <command> [-i <instance.fqdn>] [-d <destination.fqdn>] [--verbose|--debug]
+
     -i (instance): 
         instance on which to operate, in "hostname" or "hostname:port" format.
         Default port is 3306 (or DefaultInstancePort in config)
@@ -522,6 +527,16 @@ Cheatsheet:
             with a definitve candidate, which could act as a replace master. See also regroup-slaves. Example:
             
             orchestrator -c get-candidate-slave -i instance.with.slaves.one.of.which.may.be.candidate.com
+
+        regroup-slaves-bls
+            Given an instance that has Binlog Servers for slaves, promote one such Binlog Server over its other
+            Binlog Server siblings.
+            
+            Example:
+            
+            orchestrator -c regroup-slaves-bls -i instance.with.binlog.server.slaves.com
+            
+            --debug is your friend.
             
 
     Topology refactoring using GTID
@@ -552,6 +567,15 @@ Cheatsheet:
             orchestrator -c move-slaves-gtid -i instance.whose.slaves.will.relocate -d instance.that.becomes.their.master --pattern=regexp.filter
                 only apply to those instances that match given regex
                 
+        regroup-slaves-gtid
+            Given an instance (possibly a crashed one; it is never being accessed), pick one of its slave and make it
+            local master of its siblings, using GTID. The rules are similar to those in the "regroup-slaves" command.
+            Example:
+            
+            orchestrator -c regroup-slaves-gtid -i instance.with.gtid.and.slaves.one.of.which.will.turn.local.master.if.possible
+            
+            --debug is your friend.
+            
 
     Topology refactoring using Pseudo-GTID
         These operations require that the topology's master is periodically injected with pseudo-GTID,
@@ -675,7 +699,7 @@ Cheatsheet:
         skip-query
             On a failed replicating slave, skips a single query and attempts to resume replication.
             Only applies when the replication seems to be broken on SQL thread (e.g. on duplicate
-            key error). Example:
+            key error). Also works in GTID mode. Example:
 
             orchestrator -c skip-query -i slave.with.broken.sql.thread.com
             
@@ -693,7 +717,7 @@ Cheatsheet:
             Issuing this on an already detached slave will do nothing.
             
         reattach-slave
-            Undo a detahc-slave operation. Reverses the binlog change into the original values, and 
+            Undo a detach-slave operation. Reverses the binlog change into the original values, and 
             resumes replication. Example:
             
             orchestrator -c reattach-slave -i detahced.slave.whose.replication.will.amend.com
@@ -723,6 +747,13 @@ Cheatsheet:
             
             orchestrator -c flush-binary-logs -i instance.with.binary.logs.com --binlog=mysql-bin.002048
                 Flushes binary logs until reaching given number. Fails when current number is larger than input
+                        
+        purge-binary-logs
+            Purge binary logs on an instance. Examples:
+            
+            orchestrator -c purge-binary-logs -i instance.with.binary.logs.com --binlog mysql-bin.002048
+            
+                Purges binary logs until given log
                         
     Pool commands
         Orchestrator provides with getter/setter commands for handling pools. It does not on its own investigate pools,
@@ -1020,6 +1051,16 @@ Cheatsheet:
             Utility command to resolve a CNAME and return resolved hostname name. Example:
             
             orchestrator -c resolve -i cname.to.resolve
+            
+        reset-internal-db-deployment
+            Clear internal db deployment history, use if somehow corrupted internal deployment history.
+            When configured with '"SmartOrchestratorDatabaseUpdate": true', Orchestrator does housekeeping for its 
+            own database schema, and verifies proposed deployment vs deployment history.
+            In case of contradiction between the two orchestrator bails out. Such a contradiction should not occur, and may 
+            signify an inconsistency in the orchestrator code itself.  
+            By resetting history orchestrator redeploys its schema (without causing data loss) and accepts the new instructions
+            as the de-factor deployment rule.
+            
 ```
 
 ## Using the Web interface
