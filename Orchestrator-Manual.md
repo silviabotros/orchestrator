@@ -46,6 +46,8 @@ Authored by [Shlomi Noach](https://github.com/shlomi-noach) at [Booking.com](htt
 - [Using the Web interface](#using-the-web-interface)
 - [Using the web API](#using-the-web-api)
 - [Security](#security)
+- [SSL and TLS](#ssl-and-tls)
+- [Status Checks](#status-checks)
 - [Configuration](#configuration)
 - [Pseudo GTID](#pseudo-gtid)
 - [Topology recovery](#topology-recovery)
@@ -1438,7 +1440,7 @@ When operating in HTTP mode (API or Web), access to _orchestrator_ may be restri
         "AuthenticationMethod": "proxy",
         "AuthUserHeader": "X-Forwarded-User",
 
-   You will need to configure your reverse proxy to send the naem of authenticated user via HTTP header, and
+   You will need to configure your reverse proxy to send the name of authenticated user via HTTP header, and
    use same header name as configured by `AuthUserHeader`.
 
    For example, an Apache2 setup may look like the following:
@@ -1464,6 +1466,132 @@ Or, regardless, you may turn the entire _orchestrator_ process to be read only v
 
 You may combine `ReadOnly` with any authentication method you like.
 
+## SSL and TLS
+Orchestrator supports SSL/TLS for the web interface as HTTPS.  This can be standard server side certificates
+or you can configure Orchestrator to validate and filter client provided certificates with Mutual TLS.
+
+Orchestrator also allows for the use of certificates to authenticate with MySQL
+
+### HTTPS for the Web/API interface
+You can set up SSL/TLS protection like so:
+
+```json
+{
+    "UseSSL": true,
+    "SSLPrivateKeyFile": "PATH_TO_CERT/orchestrator.key",
+    "SSLCertFile": "PATH_TO_CERT/orchestrator.crt",
+    "SSLCAFile": "PATH_TO_CERT/ca.pem",
+}
+```
+
+The SSLCAFile is optional if you don't need to specify your certificate authority.  This will enable SSL via
+the web interface (and API) so that communications are encrypted, like a normal HTTPS web page.
+
+You can, similarly, set this up for the Agent API if you're using the `Orchestrator Agent` with:
+
+```json
+{
+    "AgentsUseSSL": true,
+    "AgentSSLPrivateKeyFile": "PATH_TO_CERT/orchestrator.key",
+    "AgentSSLCertFile": "PATH_TO_CERT/orchestrator.crt",
+    "AgentSSLCAFile": "PATH_TO_CERT/ca.pem",
+}
+```
+
+This can be the same SSL certificate, but it doesn't have to be.
+
+### Mutual TLS
+It also supports the concept of Mutual TLS.  That is, certificates that must be presented and valid for the
+client as well as the server.  This is frequently used to protect service to service communication in an
+internal network.  The certificates are commonly signed from an internal root certificate.
+
+In this case the certificates must 1) be valid and 2) be for the correct service.  The correct service is dictated by
+filtering on the Organizational Unit (OU) of the client certificate.
+
+*Setting up a private root CA is not a trivial task.  It is beyond the scope of these documents to
+instruct how to successfully accomplish it*
+
+With that in mind, you can set up Mutual TLS by setting up SSL as above, but also add the following directives:
+
+```json
+{
+    "UseMutualTLS": true,
+    "SSLValidOUs": [ "service1", "service2" ],
+}
+```
+
+This will turn on client certificate verification and start filtering clients based on their OU.  OU filtering is
+mandatory as it's pointless to use Mutual TLS without it.  In this case, `service1` and `service2` would be able
+to connect to Orchestrator assuming their certificate was valid and they had an OU with that exact service name.
+
+### MySQL Authentication
+You can also use client certificates to authenticate, or just encrypt, you mysql connection.  You can encrypt the
+connection to the MySQL server `Orchestrator` uses with:
+
+```json
+{
+    "MySQLOrchestratorUseMutualTLS": true,
+    "MySQLOrchestratorSSLSkipVerify": true,
+    "MySQLOrchestratorSSLPrivateKeyFile": "PATH_TO_CERT/orchestrator-database.key",
+    "MySQLOrchestratorSSLCertFile": "PATH_TO_CERT/orchestrator-database.crt",
+    "MySQLOrchestratorSSLCAFile": "PATH_TO_CERT/ca.pem",
+}
+```
+
+Similarly the connections to the topology databases can be encrypted with:
+
+```json
+{
+    "MySQLTopologyUseMutualTLS": true,
+    "MySQLTopologySSLSkipVerify": true,
+    "MySQLTopologySSLPrivateKeyFile": "PATH_TO_CERT/orchestrator-database.key",
+    "MySQLTopologySSLCertFile": "PATH_TO_CERT/orchestrator-database.crt",
+    "MySQLTopologySSLCAFile": "PATH_TO_CERT/ca.pem",
+}
+```
+
+In this case all of your topology servers must respond to the certificates provided.  There's no current
+method to have TLS enabled only for some servers.
+
+## Status Checks
+
+There is a status endpoint located at `/api/status` that does a healthcheck of the system and reports back
+with HTTP status code 200 if everything is ok.  Otherwise it reports back HTTP status code 500.
+
+### Custom Status Checks
+Since there are various standards that companies might use for their status check endpoints, you can
+customize this by setting:
+
+```json
+{
+  "StatusEndpoint": "/my_status"
+}
+```
+
+Or whatever endpoint you want.  
+
+### Lightweight Health Check
+
+This status check is a very lightweight check because we assume your load balancer might be hitting it
+frequently or some other frequent monitoring.  If you want a richer check that actually makes changes
+to the database you can set that with:
+
+```json
+{
+  "StatusSimpleHealth": false
+}
+```
+
+### SSL Verification
+
+Lastly if you run with SSL/TLS we *don't* require the status check to have a valid OU or client cert to be
+presented.  If you're using that richer check and would like to have the verification turned on you can set:
+
+```json
+{
+  "StatusOUVerify": true
+}
+```
 
 ## Configuration
 
@@ -1518,10 +1646,23 @@ The following is a complete list of configuration parameters. "Complete" is alwa
 * `PhysicalEnvironmentPattern`  (string), Regexp pattern with one group, extracting physical environment info from hostname (e.g. combination of datacenter & prod/dev env)
 * `DenyAutoPromotionHostnamePattern`  (string), Orchestrator will not auto-promote hosts with name matching patterb (via -c recovery; for example, avoid promoting dev-dedicated machines)
 * `ServeAgentsHttp`     (bool), should *orchestrator* accept agent registrations and serve agent-related requests (see [Agents](#agents))
-* `AgentsUseSSL`        (bool), if `true`, agents service runs HTTPS and also connects to agents via HTTPS
-* `SSLSkipVerify`       (bool), if `true`, SSL certification verification is skipped/ignored
-* `SSLPrivateKeyFile`   (string), SSL private key file used for agents service. Aonly applies on `ServeAgentsHttp` = `true` and `AgentsUseSSL` = `true`
-* `SSLCertFile`         (string), SSL certification file used for agents service. Aonly applies on `ServeAgentsHttp` = `true` and `AgentsUseSSL` = `true`
+* `AgentsUseSSL (bool), When `true` orchestrator will listen on agents port with SSL as well as connect to agents via SSL (see [SSL and TLS](#ssl-and-tls))
+* `AgentsUseMutualTLS (bool), When `true` Use mutual TLS for the server to agent communication
+* `AgentSSLSkipVerify (bool), When using SSL for the Agent, should we ignore SSL certification error
+* `AgentSSLPrivateKeyFile (string), Name of Agent SSL private key file, applies only when `AgentsUseSSL` = `true`
+* `AgentSSLCertFile (string), Name of Agent SSL certification file, applies only when `AgentsUseSSL` = `true`
+* `AgentSSLCAFile (string), Name of the Agent Certificate Authority file, applies only when `AgentsUseSSL` = `true`
+* `AgentSSLValidOUs ([]string), Valid organizational units when using mutual TLS to communicate with the agents
+* `UseSSL (bool), Use SSL on the server web port (see [SSL and TLS](#ssl-and-tls))
+* `UseMutualTLS (bool), When `true` Use mutual TLS for the server's web and API connections
+* `SSLSkipVerify (bool), When using SSL, should we ignore SSL certification error
+* `SSLPrivateKeyFile (string), Name of SSL private key file, applies only when `UseSSL` = `true`
+* `SSLCertFile (string), Name of SSL certification file, applies only when `UseSSL` = `true`
+* `SSLCAFile (string), Name of the Certificate Authority file, applies only when `UseSSL` = `true`
+* `SSLValidOUs ([]string), Valid organizational units when using mutual TLS
+* `StatusEndpoint (string), Override the status endpoint.  Defaults to `/api/status`
+* `StatusSimpleHealth (bool), If true, calling the status endpoint will use the simplified health check
+* `StatusOUVerify (bool), If true, try to verify OUs when Mutual TLS is on.  Defaults to false
 * `HttpTimeoutSeconds`  (int),    HTTP GET request timeout (when connecting to _orchestrator-agent_)
 * `AgentPollMinutes`     (uint), interval at which *orchestrator* contacts agents for brief status update
 * `UnseenAgentForgetHours`     (uint), time without contact after which an agent is forgotten
