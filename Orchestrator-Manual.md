@@ -34,6 +34,10 @@ recovery itself.
 
 Authored by [Shlomi Noach](https://github.com/shlomi-noach) at [Booking.com](http://booking.com) and previously at [Outbrain](http://outbrain.com) 
 
+Additional collaborators & contributors to this Wiki:
+
+- [grierj](https://github.com/grierj)
+
 #### TOC
 
 - [About](#about)
@@ -1472,7 +1476,7 @@ or you can configure Orchestrator to validate and filter client provided certifi
 
 Orchestrator also allows for the use of certificates to authenticate with MySQL
 
-### HTTPS for the Web/API interface
+#### HTTPS for the Web/API interface
 You can set up SSL/TLS protection like so:
 
 ```json
@@ -1500,7 +1504,7 @@ You can, similarly, set this up for the Agent API if you're using the `Orchestra
 
 This can be the same SSL certificate, but it doesn't have to be.
 
-### Mutual TLS
+#### Mutual TLS
 It also supports the concept of Mutual TLS.  That is, certificates that must be presented and valid for the
 client as well as the server.  This is frequently used to protect service to service communication in an
 internal network.  The certificates are commonly signed from an internal root certificate.
@@ -1524,7 +1528,7 @@ This will turn on client certificate verification and start filtering clients ba
 mandatory as it's pointless to use Mutual TLS without it.  In this case, `service1` and `service2` would be able
 to connect to Orchestrator assuming their certificate was valid and they had an OU with that exact service name.
 
-### MySQL Authentication
+#### MySQL Authentication
 You can also use client certificates to authenticate, or just encrypt, you mysql connection.  You can encrypt the
 connection to the MySQL server `Orchestrator` uses with:
 
@@ -1558,7 +1562,7 @@ method to have TLS enabled only for some servers.
 There is a status endpoint located at `/api/status` that does a healthcheck of the system and reports back
 with HTTP status code 200 if everything is ok.  Otherwise it reports back HTTP status code 500.
 
-### Custom Status Checks
+#### Custom Status Checks
 Since there are various standards that companies might use for their status check endpoints, you can
 customize this by setting:
 
@@ -1570,7 +1574,7 @@ customize this by setting:
 
 Or whatever endpoint you want.  
 
-### Lightweight Health Check
+#### Lightweight Health Check
 
 This status check is a very lightweight check because we assume your load balancer might be hitting it
 frequently or some other frequent monitoring.  If you want a richer check that actually makes changes
@@ -1582,7 +1586,7 @@ to the database you can set that with:
 }
 ```
 
-### SSL Verification
+#### SSL Verification
 
 Lastly if you run with SSL/TLS we *don't* require the status check to have a valid OU or client cert to be
 presented.  If you're using that richer check and would like to have the verification turned on you can set:
