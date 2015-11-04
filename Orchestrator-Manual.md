@@ -2346,7 +2346,7 @@ Elaborating on recovery-related configuration:
 
 - `RecoverIntermediateMasterClusterFilters`: list of cluster names, aliases or patterns that are included in automatic recovery for intermediate-master failover. Format is as above.
   Note that the `".*"` pattern matches everything.
-- `PromotionIgnoreHostnameFilters`: instances matching given regex patterns will no picked by orchestrator for promotion (these could be, for example, test servers, dev machines that are in the topologies)
+- `PromotionIgnoreHostnameFilters`: instances matching given regex patterns will not be picked by orchestrator for promotion (these could be, for example, test servers, dev machines that are in the topologies)
 
 
 ## Agents
