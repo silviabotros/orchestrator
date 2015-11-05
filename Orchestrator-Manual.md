@@ -2287,6 +2287,10 @@ Recover via:
 * Web API: `/api/recover/dead.instance.com/:3306`
 * Web: instance is colored black; click the `Recover` button
 
+Manual recoveries don't block on `RecoveryPeriodBlockMinutes` (read more in next section). They also override 
+`RecoverMasterClusterFilters` and `RecoverIntermediateMasterClusterFilters`. A manual recovery will only block on
+an already running (and incomplete) recovery on the very same instance the manual recovery wishes to operate on.
+
 ### Automated recovery
 
 By default turned off, automatic recovery may be applied for specific clusters. For greated resolution, different configuration
@@ -2339,7 +2343,7 @@ shell, in particular `bash`. Hooks are:
 
 Elaborating on recovery-related configuration:
 
-- `RecoveryPeriodBlockMinutes`: minimal amount of minutes between two recoveries on same instance (default: `60`)
+- `RecoveryPeriodBlockMinutes`: minimal amount of minutes between two recoveries on same instance or same cluster (default: `60`)
 - `RecoveryIgnoreHostnameFilters`: Recovery analysis will completely ignore hosts matching given patterns (these could be, for example, test servers, dev machines that are in the topologies)
 - `RecoverMasterClusterFilters`: list of cluster names, aliases or patterns that are included in automatic recovery for master failover. As an example:
 ```
@@ -2355,6 +2359,21 @@ Elaborating on recovery-related configuration:
   Note that the `".*"` pattern matches everything.
 - `PromotionIgnoreHostnameFilters`: instances matching given regex patterns will not be picked by orchestrator for promotion (these could be, for example, test servers, dev machines that are in the topologies)
 
+- `FailureDetectionPeriodBlockMinutes`: a detection does not necessarily lead to a recovery (for example, the instance may be downtimed). This variable indicates the minimal time interval between invocation of `OnFailureDetectionProcesses`.
+
+- `RecoveryPollSeconds`: poll interval at which orchestrator re-checks for crash scenarios (default: 10s)
+
+- `DetachLostSlavesAfterMasterFailover`: in the case of master promotion and assuming that some slaves could not make it into 
+the refactored topology, should orchestrator forcibly issue a detach-slave command to make sure they don't accidentally resume 
+replication in the future.
+
+- `MasterFailoverLostInstancesDowntimeMinutes`: when non-zero, and after master promotion, orchestrator will downtime lost
+slaves and dead master for given number of minutes.
+
+- `PostponeSlaveRecoveryOnLagMinutes`: some recovery operations can be pushed to be the very last steps; so that more urgent 
+operations (e.g. change DNS entries) could be applied faster. Fixing slaves that are lagging at time of recovery (either because of `MASTER_DELAY` configuration or just because they were busy) could take a substantial time due to binary log exhaustive search (GTID & Pseudo-GTID). This variable defines the threshold above which a lagging slave's rewiring is pushed till the last moment.
+
+- `ApplyMySQLPromotionAfterMasterFailover`: after master promotion, should orchestrator take it upon itself to clear the `read_only` flag, forcibly detach replication? (default: `false`)
 
 ## Agents
 
