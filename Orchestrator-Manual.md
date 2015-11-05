@@ -2165,27 +2165,28 @@ or ancestor (including its very own master/parent).
 
 _orchestrator_ detects failure scenarios and optionally recovers in such cases.
 
-At this time recovery requires [Pseudo GTID](#pseudo-gtid). In the future this may relax to
-support any type of GTID.
+At this time recovery requires either GTID, [Pseudo GTID](#pseudo-gtid) or Binlog Servers.
 
 ### Failure/recovery scenarios
 
 
-* DeadMasterWithoutSlaves
 * DeadMaster
 * DeadMasterAndSlaves
 * DeadMasterAndSomeSlaves
+* DeadMasterWithoutSlaves
 * UnreachableMaster
 * AllMasterSlavesNotReplicating
-* MasterWithoutSlaves
+* AllMasterSlavesNotReplicatingOrDead
 * DeadCoMaster
-* UnreachableCoMaster
-* AllCoMasterSlavesNotReplicating
+* DeadCoMasterAndSomeSlaves
 * DeadIntermediateMaster
+* DeadIntermediateMasterWithSingleSlaveFailingToConnect
+* DeadIntermediateMasterWithSingleSlave
 * DeadIntermediateMasterAndSomeSlaves
-* UnreachableIntermediateMaster
+* AllIntermediateMasterSlavesFailingToConnectOrDead
 * AllIntermediateMasterSlavesNotReplicating
-* FirstTierSlaveFailingToConnectToMaster
+* UnreachableIntermediateMaster
+* BinlogServerFailingToConnectToMaster
 
 Briefly looking at some examples, here is how _orchestrator_ reaches failure conclusions:
 
@@ -2236,13 +2237,13 @@ no required changes to topology.
 
 ### What's in a recovery?
 
-A "simple" recovery case is that of a `DeadIntermediateMaster`. It's slaves are orphaned, but when
-using Pseudo-GTID they can still be re-connected to the topology. We might choose to:
+A "simple" recovery case is that of a `DeadIntermediateMaster`. Its slaves are orphaned, but when
+using GTID or Pseudo-GTID they can still be re-connected to the topology. We might choose to:
 
 - Find a sibling of the dead intermediate master, and move orphaned slaves below said sibling
 - Promote a slave from among the orphaned slaves, make it intermediate master of its siblings, then
   connect promoted slave up the topology
-- "Match-up" (see `match-up` command) all orphaned slaves
+- relocate all orphaned slaves
 - Combine parts of the above
 
 The exact implementation greatly depends on the topology setup (which instances have `log-slave-updates`? Are instances lagging? Do they
@@ -2301,6 +2302,12 @@ automated recovery for:
 
 The last bullet is made so as to avoid flapping of recovery processes. Each recovery process is audited and recorded, and
 two recoveries cannot run on the same instance unless a minimal amount of time has passed (indicated by `RecoveryPeriodBlockMinutes`).
+
+Moreover, no two automated recoveries will be executed for the same _cluster_ in an interval shorter than `RecoveryPeriodBlockMinutes`. The first recovery to be detected wins and the others block.
+There is nothing to prevent concurrent recoveries running on _different clusters_.
+
+Pending recoveries are unblocked either once `RecoveryPeriodBlockMinutes` has passed or such a recovery has been _acknowledged_.
+Acknowledging a recovery is possible either via web API/interface (see audit/recovery page) or via command line interface (see `-c ack-instance-recoveries` or `-c ack-cluster-recoveries`).
 
 As with all operations, a recovery process puts "maintenance" locks on instances, and will not be able to refactor an instance
 already under maintenance. Furthermore, it will place a recovery lock on the instance. This protects against multiple clients
