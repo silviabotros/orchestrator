@@ -130,15 +130,30 @@ Setting up the environment is basically the same, except you don't want to
 
 	go get github.com/outbrain/orchestrator
 	
-But instead clone your own repository. Or you can 
+But instead clone your own repository.
 
-	go get github.com/your-account/orchestrator
+Assume you fork onto `github.com/you-are-awesome/orchestrator`. _Golang_ has tight coupling between source code import paths and actual URIs. This leads to much confusion. Please consult [Forking Golang repositories on GitHub and managing the import path](http://code.openark.org/blog/development/forking-golang-repositories-on-github-and-managing-the-import-path) as for ways to solve
+that coupling.
 
-Or do your Git thing and change origin. This is on you.
+Very briefly, you will either want to:
+
+	go get github.com/outbrain/orchestrator
+	git remote add awesome-fork https://github.com/you-are-awesome/orchestrator.git
+
+Or you will workaround as follows:
+
+	cd $GOPATH
+	mkdir -p {src,bin,pkg}
+	mkdir -p src/github.com/outbrain/
+	cd src/github.com/outbrain/
+	git clone git@github.com:you-are-awesome/orchestrator.git # OR: git clone https://github.com/you-are-awesome/orchestrator.git
+	cd orchestrator/
+	go get ./...
+
 
 You will have a fork of _orchestrator_ to which you can push your changes and from which you can send pull requests.
 It is best that you first consult (use the [project issues](https://github.com/outbrain/orchestrator/issues)) whether some kind of development would indeed be merged.
 
 You will need to license your code in [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) or compatible.
 
-Thank you for considering to contribute to _orchestrator_!
+Thank you for considering contributions to _orchestrator_!
