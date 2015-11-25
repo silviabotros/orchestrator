@@ -1676,7 +1676,7 @@ The following is a complete list of configuration parameters. "Complete" is alwa
 * `DetectPseudoGTIDQuery` (string), Optional query which is used to authoritatively decide whether pseudo gtid is enabled on instance
 * `BinlogEventsChunkSize` (int), Chunk size (X) for `SHOW BINLOG|RELAYLOG EVENTS LIMIT ?,X` statements. Smaller means less locking and more work to be done. Recommendation: keep `10000` or below, due to locking issues.
 * `BufferBinlogEvents`  (bool), Should we used buffered read on `SHOW BINLOG|RELAYLOG EVENTS` -- releases the database lock sooner (recommended).
-* `RecoveryPeriodBlockMinutes`  (int), The time for which an instance's recovery is kept "active", so as to avoid concurrent recoveries on smae instance as well as flapping
+* `RecoveryPeriodBlockSeconds`  (int), The time for which an instance's recovery is kept "active", so as to avoid concurrent recoveries on smae instance as well as flapping
 * `RecoveryIgnoreHostnameFilters` ([]string), Recovery analysis will completely ignore hosts matching given patterns
 * `RecoverMasterClusterFilters` ([]string), Only do master recovery on clusters matching these regexp patterns (of course the ``.*`` pattern matches everything)
 * `RecoverIntermediateMasterClusterFilters` ([]string), Only do intermediate-master recovery on clusters matching these regexp patterns (of course the ``.*`` pattern matches everything)
@@ -2269,12 +2269,8 @@ before/after recovery. These would do whatever changes needed: remove "read-only
 
 Hooks are described in detail further on.
 
-### Downtime
-
-All failure/recovery scenarios are analyzed. However also taken into consideration is the downtime status of
-an instance. If an instance is downtimes (via `orchestrator -c begin-downtime`) this is noted in the
-analysis summary. When considering automated recovery (see following), downtimed servers are ignored.
-Downtime is explicitly created for this purpose: to allow the DBA a way to suppress automated failover.
+As with all operations, major steps & decisions are audited (see `/api/audit`) and of course logged. The backend `topology_recovery`
+holds the state for recovery operations, if you like to SQL your way for information.
 
 ### Manual recovery
 
@@ -2287,13 +2283,13 @@ Recover via:
 * Web API: `/api/recover/dead.instance.com/:3306`
 * Web: instance is colored black; click the `Recover` button
 
-Manual recoveries don't block on `RecoveryPeriodBlockMinutes` (read more in next section). They also override 
+Manual recoveries don't block on `RecoveryPeriodBlockSeconds` (read more in next section). They also override 
 `RecoverMasterClusterFilters` and `RecoverIntermediateMasterClusterFilters`. A manual recovery will only block on
 an already running (and incomplete) recovery on the very same instance the manual recovery wishes to operate on.
 
 ### Automated recovery
 
-By default turned off, automatic recovery may be applied for specific clusters. For greated resolution, different configuration
+By default turned off, automatic recovery may be applied for specific clusters. For greater resolution, different configuration
 applies for master recovery and for intermediate-master recovery. Detailed breakdown of recovery-related configuration follows.
 
 The analysis mechanism runs at all times, and checks periodically for failure/recovery scenarios. It will make an
@@ -2302,23 +2298,36 @@ automated recovery for:
 - An actioanable type of scenario (duh)
 - For an instance that is not downtimed
 - For an instance belonging to a cluster for which recovery is explicitly enabled via configuration
-- For an instance not recently recovered
+- For an instance in a cluster that has not recently been recovered, unless such recent recoveries were acknowledged
+
+#### Blocking, acknowledgements, anti-flapping
 
 The last bullet is made so as to avoid flapping of recovery processes. Each recovery process is audited and recorded, and
-two recoveries cannot run on the same instance unless a minimal amount of time has passed (indicated by `RecoveryPeriodBlockMinutes`).
+two recoveries cannot run on the same instance unless a minimal amount of time has passed (indicated by `RecoveryPeriodBlockSeconds`).
 
-Moreover, no two automated recoveries will be executed for the same _cluster_ in an interval shorter than `RecoveryPeriodBlockMinutes`. The first recovery to be detected wins and the others block.
+Moreover, no two automated recoveries will be executed for the same _cluster_ in an interval shorter than `RecoveryPeriodBlockSeconds` (this of course a stronger condition than the previous one). The first recovery to be detected wins and the others block.
+
 There is nothing to prevent concurrent recoveries running on _different clusters_.
 
-Pending recoveries are unblocked either once `RecoveryPeriodBlockMinutes` has passed or such a recovery has been _acknowledged_.
+Pending recoveries are unblocked either once `RecoveryPeriodBlockSeconds` has passed or such a recovery has been _acknowledged_.
 Acknowledging a recovery is possible either via web API/interface (see audit/recovery page) or via command line interface (see `-c ack-instance-recoveries` or `-c ack-cluster-recoveries`).
+
+> The observant reader may be confused a little as for the reason for two different commands: `ack-instance-recoveries` and `ack-cluster-recoveries`, or for the different discussion on "same instance" vs "same cluster".
+> A recovery can be unacknowledged. While it is unacknowledged and still _recent_, there will be no automated recovery taking place. However if sufficient time has passed, it is perfectly valid that the recovery remains _unacknowledged_ even as _orchestrator_ proceeds to recover a new failure scenario. 
+> It is therefore possible to have multiple unacknowledged recoveries on same instance or on same cluster.
+> In the future, it may happen that we will change the behavior (based on configuration) such that constraints on recoveries of same cluster are relaxed. We therefore keep separate code and analysis for "same instance" vs. "same cluster">
 
 As with all operations, a recovery process puts "maintenance" locks on instances, and will not be able to refactor an instance
 already under maintenance. Furthermore, it will place a recovery lock on the instance. This protects against multiple clients
 all trying to recover the same failure scenario.
 
-As with all operations, major steps & decisions are audited (see `/api/audit`) and of course logged. The backend `topology_recovery`
-holds the state for recovery operations, if you like to SQL your way for information.
+### Downtime
+
+All failure/recovery scenarios are analyzed. However also taken into consideration is the downtime status of
+an instance. If an instance is downtimed (via `orchestrator -c begin-downtime`) this is noted in the
+analysis summary. When considering automated recovery, downtimed servers are ignored.
+Downtime is explicitly created for this purpose: to allow the DBA a way to suppress automated failover.
+
 
 ### Recovery hooks
 
@@ -2343,7 +2352,7 @@ shell, in particular `bash`. Hooks are:
 
 Elaborating on recovery-related configuration:
 
-- `RecoveryPeriodBlockMinutes`: minimal amount of minutes between two recoveries on same instance or same cluster (default: `60`)
+- `RecoveryPeriodBlockSeconds`: minimal amount of seconds between two recoveries on same instance or same cluster (default: `3600`)
 - `RecoveryIgnoreHostnameFilters`: Recovery analysis will completely ignore hosts matching given patterns (these could be, for example, test servers, dev machines that are in the topologies)
 - `RecoverMasterClusterFilters`: list of cluster names, aliases or patterns that are included in automatic recovery for master failover. As an example:
 ```
@@ -2373,7 +2382,7 @@ slaves and dead master for given number of minutes.
 - `PostponeSlaveRecoveryOnLagMinutes`: some recovery operations can be pushed to be the very last steps; so that more urgent 
 operations (e.g. change DNS entries) could be applied faster. Fixing slaves that are lagging at time of recovery (either because of `MASTER_DELAY` configuration or just because they were busy) could take a substantial time due to binary log exhaustive search (GTID & Pseudo-GTID). This variable defines the threshold above which a lagging slave's rewiring is pushed till the last moment.
 
-- `ApplyMySQLPromotionAfterMasterFailover`: after master promotion, should orchestrator take it upon itself to clear the `read_only` flag, forcibly detach replication? (default: `false`)
+- `ApplyMySQLPromotionAfterMasterFailover`: after master promotion, should orchestrator take it upon itself to clear the `read_only` flag & forcibly detach replication? (default: `false`)
 
 ## Agents
 
