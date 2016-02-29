@@ -6,7 +6,7 @@ A walk through common commands, mostly on the CLI side
 
 ##### Discover
 
-You need to discover your MySQL hosts. Either browse to your `http://orchestrator:3000/web/discover` page and submti an instance for discovery, or:
+You need to discover your MySQL hosts. Either browse to your `http://orchestrator:3000/web/discover` page and submit an instance for discovery, or:
 
 	$ orchestrator -c discover -i some.mysql.instance.com:3306
 	
