@@ -1936,7 +1936,7 @@ set global event_scheduler := 1;
 The above attempts to drop a view which does not actually exist. The statement does nothing in reality, and yet
 propagates through replication stream. As opposed to previous example, it will not use excessive locking.
 
-The adsadvantage of this method is that it only shows in the binary logs, and have no data visibility (cannot
+The disadvantage of this method is that it only shows in the binary logs, and have no data visibility (cannot
 `SELECT` to see Pseudo-GTID status).
 
 
