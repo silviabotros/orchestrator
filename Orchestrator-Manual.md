@@ -32,7 +32,7 @@ recovery itself.
 
 ![Orchestrator screenshot](images/orchestrator-simple.png)
 
-Authored by [Shlomi Noach](https://github.com/shlomi-noach) at [Booking.com](http://booking.com) and previously at [Outbrain](http://outbrain.com) 
+Authored by [Shlomi Noach](https://github.com/shlomi-noach) at [Github.com](http://github.com) and previously at [Outbrain](http://outbrain.com) 
 
 Additional collaborators & contributors to this Wiki:
 
@@ -1614,6 +1614,7 @@ The following is a complete list of configuration parameters. "Complete" is alwa
 * `MySQLOrchestratorPassword`   (string), credentials for backend MySQL server
 * `MySQLOrchestratorCredentialsConfigFile`  (string), as an alternative to providing `MySQLOrchestratorUser`, `MySQLOrchestratorPassword`, name of file in `my.cnf`-like format where credentials are stored.
 * `MySQLConnectTimeoutSeconds`  (int), Number of seconds before connection is aborted (driver-side)
+* `MySQLHostnameResolveMethod` (string), Method to resolve how to reach the MySQL instance. This is more powerfull than `HostnameResolveMethod` and is ideal for complex setups like multiple instances on a host with a VIP per instance. Defaults to `none` but can be set to `@@report_host`
 * `DefaultInstancePort` (int), In case port was not specified on command line (default value for this default is `3306`)
 * `SkipOrchestratorDatabaseUpdate`  (bool), When false, orchestrator will attempt to create & update all tables in backend database; when true, this is skipped. It makes sense to skip on command-line invocations and to enable for http or occasional invocations, or just after upgrades
 * `SlaveLagQuery`               (string), custom query to check on slave lg (e.g. heartbeat table). If unprovided,
